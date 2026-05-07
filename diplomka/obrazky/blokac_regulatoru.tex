@@ -1,0 +1,52 @@
+\begin{figure}[h]
+\centering
+\resizebox{\textwidth}{!}{
+\begin{tikzpicture}[
+    block/.style = {draw, rectangle, minimum height=3cm, minimum width=3.4cm, align=center},
+    arrow/.style = {->, thick},
+    node distance=2.1cm
+]
+
+    % Bloky
+    \node (wref) {$\omega_m^{*}$};
+    \node[block, right=of wref] (torque_ctrl) {Regulátor\\ momentu};
+    \node[block, right=of torque_ctrl] (current_ref) {Generátor\\ referenčního proudu};
+    \node[block, right=of current_ref] (current_ctrl) {Proudový\\ regulátor};
+    \node[block, right=of current_ctrl] (dq2ab) {$dq \rightarrow \alpha\beta_{1,3}$};
+    \node[block, right=of dq2ab] (mod) {Modulátor a\\ Pohon};
+    \node[block, below=of dq2ab] (todq) {$abcd \rightarrow dq$};
+    
+    % Měřené signály
+    \node[below=1.2cm of torque_ctrl] (wmeas) {$\omega_m$};
+    \node[below=1.2cm of current_ctrl] (imeas) {$i_{s\,dq13}$};
+    
+    % Spojení s popisky
+    \draw[arrow] (wref) -- (torque_ctrl);
+    
+    \draw[arrow] (wmeas) -- (torque_ctrl);
+    
+    \draw[arrow] (torque_ctrl) -- 
+        node[midway, above] {$T^{*}$}
+        (current_ref);
+    
+    \draw[arrow] (current_ref) -- 
+        node[midway, above] {$i^{*}_{dq13}$}
+        (current_ctrl);
+    
+    \draw[arrow] (imeas) -- (current_ctrl);
+    
+    \draw[arrow] (current_ctrl) -- 
+        node[midway, above] {$V^{*}_{dq13}$}
+        (dq2ab);
+    
+    \draw[-stealth] (dq2ab) -- 
+        node[midway, above] {$V^{*}_{\alpha\beta_{1,3}}$}
+        (mod);
+    \draw[<-]  (todq.east)  -|(mod.south) ;
+    \draw[->] (todq)  -| (imeas.south);
+    \draw[->] (todq)  -| (wmeas.south);
+    
+\end{tikzpicture}}
+\caption{Blokové schéma navrhovaného regulátoru}
+\label{fig:regulator blokac}
+\end{figure}

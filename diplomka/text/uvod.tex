@@ -1,0 +1,15 @@
+\chapter*{Úvod}
+\phantomsection
+\addcontentsline{toc}{chapter}{Úvod}
+
+Cílem semestrální práce je připravit nástroje pro návrh pětifázového pohonu vžívající synchronní motor s permanentními magnety. Pro ovládání motoru je bude použit dvoustupňový střídač.
+
+Vícefázové pohony se vyznačují větší hustotou výkonu na jednotku hmotnosti. Jelikož je výkon rozložen do více fází mají při stejném výkonu nižší proudy jednotlivými větvemi střídače. Zároveň jsou vícefázové motory odolnější vůči poruchám, jsou schopny pokračovat v provozu i při výpadku jedné či dvou fází. Proto jsou vhodné pro kritické aplikace jako například letectví.
+
+Pro odstranění nelinearit z matematického modelu motoru a následně snazší návrh řízení, je zavedena transformace do  $dq_{1,3}$, popsáno jení chování. Jsou představenstvy transformační matice pro převod do $dq$ prostoru, matice pro přechod mezi rotačními a statickými souřadnicemi. Dále jsou popsány i matice pro opačnou transformaci zpět do $abcde$.
+
+Jako modulace je požita prostorově vektorová pulzně šířková modulace (SVPWM -space vector pulse width modulation). Je popsáno rozšíření 3 fázové modulace na referenční napětí v $\alpha \beta_{1,3}$. Je představen algoritmus výběru výstupních vektorů a výpočet času jejich aplikace.
+
+Je popsán řízený motor a přestaven jeho matematický model ve vztažený k jednotlivým fázím ($abcde$ souřadnice). Rovnice motoru jsou pak popsanou transformací převedeny do $dq{1,3}$ souřadnic.
+
+Je popsáno blokové schéma regulátoru a představen koncept řízení které bude použito.

@@ -1,0 +1,279 @@
+%bez editace
+\section{Motor}
+Práce se zabývá řízením 5 fázového synchronního motoru s permanentními magnety, konkrétně IPMSM(Interior Permanent Magnet Synchronous Machine) tedy motor s magenty umístěnými uvnitř motor. Konkrétní parametry jsou shrnuty v tabulce~\ref{tab:param_motoru}.  
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{|l|l|r l|}
+    \hline
+    Název proměnné & Zkratka & Hodnota & ~          \\     \hline
+    Typ vinutí & -- & Star-wound        & ~       \\    
+    Počet pólových dvojic & $p$ & 8     &~        \\    
+    Toková vazba permanentního magnetu & $\psi_{\mathrm{PM}}$ & 0.04366& Wb            \\    
+    Vlastní indukčnost statoru na fázi & $L_s$ & 0.0002& H        \\    
+    Fluktuace indukčnosti statoru & $L_m$ & -0.00002 & H        \\    
+    Vzájemná indukčnost statoru & $M_s$ & 0.00002 &H      \\    
+    Odpor statoru na fázi & $R_s$ & 0.010087 & $\Omega$               \\
+    \hline
+    \end{tabular}
+    \caption{Parametry synchronního motoru s permanentními magnety}
+    \label{tab:param_motoru}
+\end{table}
+\subsection{Výhody vícefázových motorů}
+%Multi-phase drives offer some distinct advantages over their three-phase drive counterparts. The major advantages of using a multi-phase machine instead of a three-phase machine are described in [17–42]: higher torque density [22–26]; reduced torque pulsations [1, 27]; greater fault tolerance [27–38]; reduction in the required rating per inverter leg (and therefore simpler and more reliable power conditioning equipment) [39, 40]; and better noise characteristics, higher phase, number yield smoother torque due to the simultaneous increase of the frequency of the torque pulsation, and reduction of the torque ripple magnitude [41, 42]. Multi-phase drives are still unsuitable for general purpose drives application and thus their application areas are restricted to some critical domains such as ship propulsion, more-electric aircraft, hybrid electric vehicles, electric traction, and battery powered electric vehicles [43–48]. The reasons behind this are primarily two-fold. In high power applications (i.e. ship propulsion), the use of multi-phase drives enables reduction of the required power rating per inverter leg (phase). This is a major advantage over the converter end side, as lower switch ratings can handle reduced per-phase power. In high power applications, series and/or parallel combinations of power electronics switches are required to process large amounts of power. The series/parallel combination of switches poses the problem of static and dynamic voltage and current sharing. Thus reduced per-phase power is very attractive in this application. In safety-critical applications (i.e. more-electric aircraft), the use of multi-phase drives enables greater fault tolerance, which is of paramount importance. It has been shown that the loss of one or two phases has little impact on drive behavior. Finally, in electric vehicles and hybrid electric vehicle applications, use of multi-phase drives for propulsion enables reduction of the required semiconductor switch current rating; although these drives are not characterized by high power, low voltage availability in vehicles makes the current high.\cite{WileyHigPer}
+
+Vícefázové pohony mají oproti klasickým trojfázovým řadu výhod. Oproti klasickým 3 fázovým motorům dosahují výší výkonové hustoty (poměr maximálního generovaného výkonu k hmotnosti motoru, moment motoru méně osciluje, generuji méně šumu. Zároveň jsou je možné je provozovat i při poruše na jedné z fází. vícefázové pohony se nepoužívají pro běžné instalace, jejich využiji je především pro kritické aplikace, jako je například pohony lodí, eklektické letouny, elektromobily a lokomotivy. 
+
+U pohonů z vysokým výkon umožňují vícefázové řešení snížení maximálního proudu tekoucí jedou větví (fází) střídače. To snižuje požadavky na jednotlivé polovodičové snímače, čímž se snižují cena celého pohonu.  
+
+Dalším využití vícefázový pohonu je potom v kritických aplikacích (např.~letouny). Vícefázové pohony zvládají bez větších obtíží fungovat i při výpadku jedné či dvou fází. \cite{WileyHigPer}
+
+\subsection{Matematický model motoru}
+\label{kap:model abcd}
+
+Vztah mezi napětím a proudem lze vyjádřit  z rovnice \ref{eq:model abc u}, kde $\frac{d\psi_i}{dt}$ odpovídá derivacím magnetického toku statoru $\psi_i$. Ten je podle rovnice \ref{eq:fluxabc} závislý na proudech statorem, vzájemných matici vzájemných indukčností $L_S(\theta)$ a příspěvku od rotorovém magnetickém toku $\psi_{im}$ vtaženého ke statoru. Ten je pak závislý na magnetickém toku rotoru vyvoleném permanentními magenty $\psi_{PM}$ rotoru a jeho natočení $ \theta_r$ (rovnice \ref{eq:flux rotace abc}). Matice $L_S(\theta)$ je pak dána rovnicí \ref{eq:model abc induknost},   
+,kde matice $I$ je jednotková matice, matice $M_{a5}$,$M_{b5}$ složí k přepočtu Indukčnostní a jsou funkcí $\theta$, uvedeny jsou v příloze \ref{pri:Ma5 Mb5}.   \cite{malab_motor},\cite{Model_5phase}
+
+\begin{equation}
+\label{eq:model abc u}
+    \begin{bmatrix}
+    v_a \\ v_b \\ v_c \\ v_d \\ v_e
+    \end{bmatrix}
+    =
+   R_S \cdot
+    \begin{bmatrix}
+    i_a \\ i_b \\ i_c \\ i_d \\ i_e
+    \end{bmatrix}
+    +
+    \begin{bmatrix}
+    \frac{d\psi_a}{dt} \\
+    \frac{d\psi_b}{dt} \\
+    \frac{d\psi_c}{dt} \\
+    \frac{d\psi_d}{dt} \\
+    \frac{d\psi_e}{dt}
+    \end{bmatrix}
+\end{equation}
+
+\begin{equation}
+\label{eq:fluxabc}
+\begin{bmatrix}
+\psi_a \\ \psi_b \\ \psi_c \\ \psi_d \\ \psi_e
+\end{bmatrix}
+=
+L_s(\theta)
+\begin{bmatrix}
+i_a \\ i_b \\ i_c \\ i_d \\ i_e
+\end{bmatrix}
++
+\begin{bmatrix}
+\psi_{am} \\ \psi_{bm} \\ \psi_{cm} \\ \psi_{dm} \\ \psi_{em}
+\end{bmatrix}
+\end{equation}
+
+
+
+\begin{equation}
+   \label{eq:flux rotace abc} 
+\begin{bmatrix}
+\psi_{am} \\
+\psi_{bm} \\
+\psi_{cm} \\
+\psi_{dm} \\
+\psi_{em}
+\end{bmatrix} = 
+\underbrace{
+\begin{bmatrix}
+\cos \theta_r \\
+\cos(\theta_r - 2\pi/5) \\
+\cos(\theta_r - 4\pi/5) \\
+\cos(\theta_r + 4\pi/5) \\
+\cos(\theta_r + 2\pi/5)
+\end{bmatrix}}_\gamma
+\cdot \Psi_{PM}
+\end{equation}
+
+
+\begin{equation}
+    \label{eq:model abc induknost}
+    L_{s}(\theta) = L_{ls}I + L_{A5}M_{a5} + L_{B}M_{b5}
+\end{equation}
+
+\input{obrazky/ma5mb5}
+
+
+\section{Mechanika motoru}
+\begin{equation}
+J\dot{\omega} = T_1 - T_2 - b\,\omega
+\end{equation}
+
+\begin{equation}
+\dot{\omega} = \frac{1}{J} \,(T_1 - T_2 - b\,\omega)
+\end{equation}
+\begin{equation}
+G(s) = \frac{\Omega(p)}{T(p)} = \frac{1}{Jp + b}
+\end{equation}
+
+\begin{equation}
+\dot{\omega} = \frac{T_1 - T_2 - b\,\omega}{J}
+\end{equation}
+    
+\begin{equation}
+\dot{\psi} = \omega
+\end{equation}
+
+
+\begin{equation}
+    \begin{pmatrix} \dot{\psi} \\ \dot{\omega} \end{pmatrix}
+=
+\begin{pmatrix} 0 & 1 \\ 0 & -\dfrac{b}{J} \end{pmatrix}
+\begin{pmatrix} \psi \\ \omega \end{pmatrix}
++
+\begin{pmatrix} 0 \\ \dfrac{1}{J} \end{pmatrix}
+(T_1 - T_2)
+\end{equation}
+
+
+
+\subsection{Převod modelu do $dq_{1,3}$} a $\alpha \beta_{1,3}$
+Model z kapitoly \ref{kap:model abcd} obsahuje množství nelineárních funkcí, v maticích $L_s$a $\gamma$. Tyto matice jsou funkcí úhlu $\theta$,který je proměnný v čase. Tento tvar popisu motoru není vhodný pro návrh řízení motoru, i implementaci prostorově vektorové pulzně šířkové modulace. Proto se v této kapitole aplikuji představenou transformaci na model motoru, ten nejdříve převedu do $\alpha \beta_{1,2}$ a následně $dq_{1,3}$. V kapitole jsou popsány transformační matice sloužící pro přechod mezi jednotlivými reprezentacemi motoru.
+
+\subsubsection{abcde do $\alpha \beta_{1,3}$}
+Pro převod modelu do $\alpha \beta$ vyšel z rovnic v abcde ve kterých jsem nahradil stavy reprezentované v abcde  prostoru použitím vztahu $X_{abcde}=K_{S-inv} \cdot X_{\alpha \beta}$. 
+U rovnice  pro statorové napětí \ref{eq:model abc u} po dosazení a roznásobí celé rovnice maticí $K_S$ získám vztah \ref{eq:model U allfa beta} který je podobný původnímu. 
+
+\begin{equation}
+    \label{eq:model U allfa beta}
+    v_{s \alpha\beta{1,3}}=R_S \cdot i_{s \alpha \beta_{1,3}} + \frac{d\psi_{s\alpha \beta_{1,3}}}{dt}
+\end{equation}
+
+Rovnice pro statorový indukční tok vychází z \ref{eq:fluxabc} ze které dosazením získám rovnici \ref{eq:flux mezikrok}. Po jejím vynásobení maticí $K_S$ zleva a dostaneme vztah \ref{eq:flux alfa beta}.
+
+
+
+\begin{equation}
+    \label{eq:flux mezikrok}
+    K_{S-inv} \cdot \psi_{\alpha \beta_{1,3}}=
+    L_s(\theta)K_{s-inv} \cdot i_{\alpha \beta}+ K_{S-inv} \cdot \psi_{m \alpha \beta}
+\end{equation}
+
+\begin{equation}
+    \label{eq:flux alfa beta}
+    \psi_{\alpha \beta_{1,3}}=
+    \underbrace{K_sL_s(\theta)K_{s-inv}}_{L_{\alpha \beta}} \cdot i_{\alpha \beta}+ \psi_{m \alpha \beta}
+\end{equation}
+
+
+
+\begin{equation}
+    \label{eq:model rotorflux alfa beta}
+    \psi_{m \alpha \beta}=\underbrace{K_S\gamma}_{\gamma_{s}} \cdot \Psi_{PM}
+\end{equation}
+
+\subsubsection{Převod modelu do dq}
+Při převodu napěťové rovnice do $dq$ jsem vyšel z rovnice v $\alpha \beta$. Protože matice $R(\theta)$ funkcí času nejde ji jako u převodu do $\alpha \beta$ vytknout před derivaci. 
+
+
+Pro rovnici statorového napětí jsem vyšel z rovnice \ref{eq:model U allfa beta}, všechny signály jsem převedl do $dq_{1,3}$ využitím vztahu $ a_{\alpha \beta 1,3} = R(\theta)^{ivn}  \cdot a_{dq13} $. Dosazením jsem získal rovnici \ref{eq:prevod1} a následným vyjádřením derivace součinu jsem došel k rovnici \ref{eq:prevod2}.
+\begin{equation}
+    \label{eq:prevod1}
+    R_{inv} \cdot v_{dq}= R_S \cdot R(\theta)^{inv} \cdot i_{dq} + \frac{d}{dt} (R(\theta)^{inv} \cdot \psi_{dq}) 
+\end{equation}
+
+
+
+
+\begin{equation}
+\label{eq:prevod2}
+    R_{inv} \cdot v_{dq}= R_S \cdot R(\theta)^{inv} \cdot i_{dq} + \frac{d}{dt} R(\theta)^{inv} \cdot \psi_{dq} +  R(\theta)^{inv} \cdot \frac{d \cdot\psi_{dq}}{dt} 
+\end{equation}
+
+Rovnici \ref{eq:prevod2} pak vynásobím maticí R zleva. Čímž u většiny členů rovnice  získám  součin $R(\theta)^{inv} \cdot R $, který odpovídá jednotkové matici, pouze u členu $\psi_{dq}$ vznikne matice která není jednotková, tu označím jako E (rovnice \ref{eq:prevod3}). 
+
+\begin{equation}
+    \label{eq:prevod3}
+    v_{dq}= R_S \cdot i_{dq} + \underbrace { R(\theta) \cdot \frac{d\cdot R(\theta)^{inv}}{dt}}_E  \cdot \psi_{dq} +  \frac{d \cdot\psi_{dq}}{dt} 
+\end{equation}
+
+Po dosazení $\theta=\omega_{fr}\cdot t$, do matice R jsem získal tvar k derivaci. Spočítáním derivace součinu $R_{inv} \cdot \psi_s$ a dalších úpravách jsem pak došel k rovnici \ref{eq:model dq v}. 
+
+\begin{equation}
+    \label{eq:model dq v}
+    v_{dq}=R_S\cdot i_{dq}+\omega_{fr} 
+    \underbrace{
+    \begin{bmatrix}
+    0 &-1&0&0\\
+    1&0&0&0\\
+    0&0&0&-3\\
+    0&0&3&0 
+    \end{bmatrix}}_{E}\psi_{sdq}+\frac{d\psi_{sdq}}{dt}
+\end{equation}
+
+Pro rovnici magnetický tok od rotoru jsem vyšel z rovnice \ref{eq:flux rotace abc} popisující tok v abcde, pokud je vektor magnetického toku zarovnaný s d souřadnicí (uhel natočení elektrického pole $\theta_e=0$ právě tehdy když je na fázi a maximální napětí), výraz po dosazení a vyjádření značně zjednoduší (vztah\ref{eq:flux rotace dq}), všechny složky vektoru $\gamma$ kromě první jsou nulové. 
+
+
+\begin{equation}
+    \label{eq:flux rotace dq}
+    \psi_{r_{dq}}=K_R\cdot \gamma \cdot\Psi_{PM}
+ =\begin{bmatrix}
+        1&0&0&0
+    \end{bmatrix}^T \cdot
+    \Psi_{PM}
+\end{equation}
+
+
+
+U statorové magnetického toku je situace podobná jakou převodu do $\alpha \beta$. V případě transformace do $dq$ po roznásobení rovnice \ref{eq:model abc induknost} se celý výpočet $L_s$ významně zjednoduší na výraz \ref{eq: modle indukcnost dq}.       
+
+
+\begin{equation}
+    \psi_{sdq}=
+     \underbrace{K_RL_sK_{R}^{inv}}_{L_{s-dq}} 
+    \cdot i_{dq}+ \psi_{r_{dq}}
+\end{equation}
+
+\begin{equation}
+\label{eq: modle indukcnost dq}
+    L_{s_{dq}}=
+    \begin{bmatrix}    
+    \frac{5\,L_{\textrm{a5}} }{2}+\frac{5\,L_{\textrm{b5}} }{2}+L_{\textrm{ls}}  & 0 & 0 & 0\\
+    0 & \frac{5\,L_{\textrm{a5}} }{2}-\frac{5\,L_{\textrm{b5}} }{2}+L_{\textrm{ls}}  & 0 & 0\\
+    0 & 0 & L_{\textrm{ls}}  & 0\\
+    0 & 0 & 0 & L_{\textrm{ls}} 
+    \end{bmatrix}=
+    \begin{bmatrix}
+        L_{d1} &0&0&0\\
+        0 &L_{q1}&0&0\\
+        0 &0&L_{d3}&0\\
+        0 &0&0&L_{q3}\\
+    \end{bmatrix}
+\end{equation}
+
+%%% po dosazeni
+
+Po dosazeni a úpravě rovnic statorového, rotorového indukčního toku a statorové  indukčnosti v dq, \ref{eq:flux rotace dq} až \ref{eq: modle indukcnost dq}, jsem získal rovnice \ref{eq:model dq flux final}. Pro z dalších výpočtu sem statorový indukční tok dosadil do rovnice statorového napětí \ref{eq:model dq v} čímž jsem došel ke vztahu \ref{eq:model dq v final}, který motor plně popisuje. Tyto rovnice jsou nezávislé na úhlu $\theta$, tedy i časově invariantní a všechny matice kromě matice E jsou diagonální. Získané rovnice jsou lineární a vhodné pro návrh řízení.
+
+
+
+\begin{equation}
+    \label{eq:model dq flux final}
+    \psi_{s_{dq}}=
+    \underbrace{
+     \begin{bmatrix}    
+        L_{d1} &0&0&0\\
+        0 &L_{q1}&0&0\\
+        0 &0&L_{d3}&0\\
+        0 &0&0&L_{q3}\\
+    \end{bmatrix}}_{L_{s_{dq}}}
+    \cdot i_{dq}+ 
+    \underbrace{
+    \begin{bmatrix}
+        1 \\ 0 \\0 \\0 
+    \end{bmatrix}}_{\gamma_{dq}} \cdot \Psi_{PM}
+\end{equation}
+
+
+
+\begin{equation}
+    \label{eq:model dq v final}
+    v_{dq_{13}} = R_s i_{dq_{13}}+ \omega_{fr}E \left( L_{s}i_{dq_{13}} + \gamma \Psi_{PM}\right) + \frac{di_{dq_{13}}}{dt} Ls
+\end{equation}

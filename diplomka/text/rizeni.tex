@@ -1,0 +1,345 @@
+\chapter{Návrh řídícího systému}
+Jak bylo zmíněno výše vstupy do regulátoru je měřený regulátoru jsou statorový proud v $dq$ souřadnicích $i_{s_{dq13}}$, otáčky motoru $\omega_m$ a generovaný moment $T$. Na obrázku je \ref{fig:regulator blokac} je blokové schéma navrhovaného regulátoru, ten se skládá z několika bloků. Regulátor momentu na základě rozdílu mezi požadovanou a měřenou rychlostí generuje požadovaný moment $T^*$. Pro požadovaný moment je potom generován povídající vektor proudu $i_ {dq_{13}}$ ten vstupuje do proudového regulátoru, jehož výstupem už je požadované napětí $V^*_{dq_13}$, to je transformováno na $V_{\alpha \beta_{1,3}}$, které stupem do modulátoru popsaného výše.
+
+\input{obrazky/blokac_regulatoru}
+
+
+\section{Proudová smyčka}
+\subsection{Odstranění křížové vazby}
+Přepsáním rovnice \ref{eq:model dq v final} získám diferenciální rovnici \ref{eq:ss idq s kriz} popisující proud motoru, problematický pro regulaci je člen  $- \omega[k]E \left( Li[k] + \gamma \Psi\right)$,  reprezentující zpětné elektromotorické napětí. To je problematické protože je závislé na otáčkách motoru $w$ a zároveň matice E není diagonální uzpůsobuje tedy křížovou mezi jinak nezavilými systémy. 
+
+\begin{equation}
+    \label{eq:ss idq s kriz}
+     \frac{di}{dt} = \frac{1}{L_s} \left( v_{dq_{13}} - R_s i_{dq_{13}} - \omega_{fr}E \left( L_{s}i_{dq_{13}} + \gamma \Psi_{PM}\right) \right)
+\end{equation}
+
+\begin{equation}
+    \label{eq:diskretni i}
+    i[k+1] = i[k] + \frac{T_s}{L} \left( v[k] - R \cdot i[k] - \omega[k]\cdot E \left( L\cdot i[k] + \gamma \Psi\right) \right)
+\end{equation}
+
+Nechtěný člen eliminuji zavedením substituce za $v[k]$ (\ref{eq:substituce v}). Substituovaný výraz je závislý na otáčkách elektrického pole ty lze spočítat s měřených otáček motoru a proudu statorem, který přímo měřím. Dosazením do rovnice \ref{eq:diskretni i} získávám systém popsaný \ref{eq:proud bez krize}, jedná se o 4 nezávisel SISO systémy prvního řádu. Pro ně stačí navrhnou 4 jednoduché regulátory.  
+
+
+\begin{equation}
+\label{eq:substituce v}
+    v[k]=u[k] +  \omega[k]E \left( Li[k] + \gamma \Psi\right)
+\end{equation}
+
+\begin{equation}
+    \label{eq:proud bez krize}
+    i[k+1] = i[k] + \frac{T_s}{L} \left( u[k] - R \cdot i[k]  \right)
+\end{equation}
+
+
+\subsection{Návrh proudového regulátoru}
+
+
+\section{Řízení momentu}
+Moment generovaný motorem je dán rovnicí \ref{eq:moment dq} \cite{multiphasePMSM}. Pokud za jednotlivé komponenty $\psi_s$ dosadíme z rovnice \ref{eq:model dq flux final}, získáme po úpravě vztah \ref{eq:moment dq proud}, kde $p$ odpovídá počtu pólových dvojic. 
+\begin{equation}
+    \label{eq:moment dq}
+    T_e = \frac{5}{2} p \cdot (\psi_{sd1} i_{q1} - \psi_{sq1} i_{d1} + 3 \psi_{sd3} i_{q3} - 3 \psi_{sq3} i_{d3}) 
+\end{equation}
+
+
+  \begin{equation}
+     \label{eq:moment dq proud}
+      T_e = \frac{5}{2} p \cdot \left[
+     \left(\Psi _{\mathrm{PM}}+i_{\mathrm{d1}}\,\left(L_{\mathrm{d1}}-L_{\mathrm{q1}}\right)\right)\,i_{\mathrm{q1}}+
+     \left(3\,L_{\mathrm{d3}}-3\,L_{\mathrm{q3}}\right)\,i_{\mathrm{q3}}\cdot i_{\mathrm{d3}} \right]
+ \end{equation}
+ Jelikož $L_{d3}=L_{q3}=Ls$ získáme po finální vztah pro moment \ref{eq:moment dq proud final}, ten je nezávislý na $i_{dq_3}$.
+
+ \begin{equation}
+     \label{eq:moment dq proud final}
+     T_e = \frac{5}{2} p \cdot 
+     \left(\Psi _{\mathrm{PM}}+i_{\mathrm{d1}}\,\left(L_{\mathrm{d1}}-L_{\mathrm{q1}} \right) \right)i_{\mathrm{q1}}
+ \end{equation}
+
+Moment tedy je tedy přímo možné ovlivnit proudem první harmonické $i_{dq_1}$. Jelikož $q1$ složka indukčnosti bývá větší než $L_{d1}$, je výraz $\left(L_{\mathrm{d1}}-L_{\mathrm{q1}} \right) $ záporný\cite{petros}.
+
+Nejjednodušším přístupem k regulaci momentu je nastavit referenci $i_{d1}^*=0$ a moment regulovat přímo pomocí $i_{q1}$. Toto řešení je dostatečně robustní a jednoduché na implementaci i na ladění. Nevýhodu tohoto řešení je že tím dochází ke snížení maximálního možného generovaného momentu. 
+
+Moment jde ještě zvýšit aplikováním záporného proudu $i_{d1}$. Pro požadovaný moment potom existuje vztah mezi $i_{d1}$ a $i_{q1}$, kterým jde daného momentu dosáhnout. Pro zvolení dvojce proudu lze použít například  MTPA(maximum torque per ampere) tedy maximální moment na ampér. Algoritmus spočívá v tom že pro daný moment vybere takovouto dvojici proudů aby byl maximalizován moment generovaný jedním ampérem dodaným do motoru.\cite{petros}
+
+
+
+
+
+\section{Injekce 3.harmonické}
+Model motoru v Matlabu popsaný v kapitole xxx, není PODROBNÝ. Nezohldnuje JEV pri kterém je pozorujeme vlliv permanenntího magenu i v rovině $dq_3$. Rovnice \ref{eq:model dq flux final}  tento jev nezohldnuje, při zhodění vlinu permanetního magenu na 3.harmonickou složku statorového indukčního toku odpovídá spíše rovnici \ref{eq:model dq flux 3}. Kde k je konstanta vyplývající z konstrukce motoru, pohybuje se většinou v rozmezí $0.2-0.3$. Tato změna $\gamma$ ovlivní i velikost momentu rovnice \ref{eq:moment dq proud} pro nový popsi neplatí, pokud vyjdu z rovnice \ref{eq:moment dq} tak po dosazení získám nový vztah pro moment \ref{eq:moment 3rd}, a z nej po úpravě \ref{eq:moment 3rd final}.
+\begin{equation}
+    \label{eq:model dq flux 3}
+    \psi_{s_{dq}}=
+    \underbrace{
+     \begin{bmatrix}    
+        L_{d1} &0&0&0\\
+        0 &L_{q1}&0&0\\
+        0 &0&L_{d3}&0\\
+        0 &0&0&L_{q3}\\
+    \end{bmatrix}}_{L_{s_{dq}}}
+    \cdot i_{dq}+ 
+    \underbrace{
+    \begin{bmatrix}
+        1 \\ 0 \\k \\0 
+    \end{bmatrix}}_{\gamma_{dq}} \cdot \Psi_{PM}
+\end{equation}
+
+
+\begin{equation}
+    \label{eq:moment 3rd}
+         T_e = \frac{5}{2} p \cdot \left[
+     \left(\Psi _{\mathrm{PM}}+i_{\mathrm{d1}}\,\left(L_{\mathrm{d1}}-L_{\mathrm{q1}}\right)\right)\,i_{\mathrm{q1}}+
+     \left( k\cdot \Psi_{PM}+ i_{\mathrm{d3}} \left(L_{\mathrm{d3}}-\,L_{\mathrm{q3}}\right)\right)3\,i_{\mathrm{q3}}\right) ]
+\end{equation}
+
+\begin{equation}
+    \label{eq:moment 3rd final}
+       T_e = \frac{5}{2} p \cdot \left[
+     \left(\Psi _{\mathrm{PM}}+i_{\mathrm{d1}}\,\left(L_{\mathrm{d1}}-L_{\mathrm{q1}}\right)\right)\,i_{\mathrm{q1}}+
+     3\,k\cdot \Psi_{PM}\cdot\,i_{\mathrm{q3}}\right]
+\end{equation}
+
+Na rozdíl od předchozího modelu je generovaný moment nyní ovlivněn také 3.harmonickou složkou proudu. Pokud je proud $i_{q\,3}$ nenulová, motor je generuje oproti předchozímu přístupu větší moment. 
+
+Pro určení poměru 1. a 3. harmonické složky existuje více přístupů pro PMSM motor bez vystouplých pólů je (tedy $L_{d\,1} =L_{q\,1}$ v \ref{} popsáno ... 
+
+
+%% bacha 
+\newcommand{\Ld}[1]{L_{d#1}}
+\newcommand{\Lq}[1]{L_{q#1}}
+\newcommand{\psipm}[1]{\psi_{\mathrm{pm}#1}}
+\newcommand{\dL}[1]{\Delta L_{#1}}
+
+\newcommand{\Is}[1]{I_{s#1}}
+\newcommand{\idj}{i_{d\,1}}
+\newcommand{\iqj}{i_{q\,1}}
+\newcommand{\idt}{i_{d\,3}}
+\newcommand{\iqt}{i_{q\,3}}
+
+
+
+
+% ------------------------------------------------------------
+\section{Formulace optimalizační úlohy MTPA}
+\label{sec:formulace}
+% ------------------------------------------------------------
+
+\subsection{Účelová funkce}
+\label{subsec:ucel}
+
+Ztráty v~mědi pětifázového statoru jsou úměrné součtu druhých mocnin
+amplitud proudů ve všech čtyřech řízených osách:
+ Celem oje opět miminalitzovat ztráty vedeni ten odpovídá součtu 2.mocnin jednotlivých porudů 
+\begin{equation}
+J_r = \idj^2 + \iqj^2 + \idt^2 + \iqt^2
+  = \Is{1}^2 + \Is{3}^2
+  = I_s^2,
+\label{eq:ucel}
+\end{equation}
+
+kde $\Is{1} = \sqrt{\idj^2+\iqj^2}$ a
+$\Is{3} = \sqrt{\idt^2+\iqt^2}$ jsou amplitudy vektoru proudu
+v~každém podprostoru.
+Cílem MTPA minizovat pro pořadovaný momet $T_e$ minimalizovat funci J. 
+
+
+
+Úplná sada omezení je uvedena v~\cref{tab:omezeni} a~odvozena
+v~\cref{sec:omezeni}.
+
+\begin{table}[ht]
+\centering
+\caption{Přehled omezení optimalizace MTPA.}
+\label{tab:omezeni}
+\renewcommand{\arraystretch}{1.35}
+\begin{tabular}{clll}
+\toprule
+Označení & Výraz & Typ & Fyzikální význam \\
+\midrule
+C0 & $T_e = T_e^*$ & rovnost & požadovaný moment \\
+C1 & $\idj^2 - \tfrac{\psipm{1}}{\dL{1}}\,\idj - \iqj^2 = 0$ &
+     rovnost & lokus MTPA, podprostor~1 \\
+C2 & $\idt^2 - \tfrac{\psipm{3}}{\dL{3}}\,\idt - \iqt^2 = 0$ &
+     rovnost & lokus MTPA, podprostor~3 \\
+C3 & $\dfrac{\idj}{\dL{1}\,\iqj} = \dfrac{\idt}{\dL{3}\,\iqt}$ &
+     rovnost & vazba mezi podprostory \\
+C4 & $I_s^2 \leq I_{\mathrm{jmen}}^2$ & nerovnost & mez proudu ($dq$-norma) \\
+C5 & $\Is{1} + \Is{3} \leq I_{\mathrm{f,max}}$ &
+     nerovnost & špičkový proud jedné fáze \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+
+\paragraph{Formulace.}
+\subsubsection{C0}
+Tato podmínka vzchází rovnice \ref{eq:moment 3rd final}
+\begin{equation}
+    T_e^*= \frac{5}{2} p \cdot \left[
+     \left(\Psi _{\mathrm{PM}}+i_{\mathrm{d1}}\,\left(L_{\mathrm{d1}}-L_{\mathrm{q1}}\right)\right)\,i_{\mathrm{q1}}+
+     3\cdot \Psi_{PM3}\cdot\,i_{\mathrm{q3}}\right]
+\end{equation}
+
+V~implementaci MATLAB se pravá strana aktualizuje v~každém bodě
+rozmetání momentu:
+
+
+% ............................................................
+
+
+
+\subsection{C4 -- Mez celkové amplitudy proudu}
+
+V~provozních bodech hluboko pod jmenovitým proudem je omezení C4
+neaktivní a~optimum určují výhradně lokusy C1--C2.
+Jak moment roste, C4 se aktivuje; stroj přejde z~oblasti MTPA do oblasti
+\emph{maximálního proudu} (MC), kde $I_s = I_{\mathrm{jmen}}$ zůstává
+konstantní a~optimalizuje se úhel proudového vektoru.
+Kód vypočítá strop proveditelnosti (maximální moment na kružnici
+$I_s = I_{\mathrm{jmen}}$) před samotným rozmetáním, aby bylo zaručeno
+splnění C4 ve všech bodech.
+
+% ............................................................
+\subsection{C5 -- Mez špičkového proudu jedné fáze}
+\label{subsec:C5}
+
+\paragraph{Formulace.}
+\begin{equation}
+\Is{1} + \Is{3} \leq I_{\mathrm{f,max}},
+\qquad
+\Is{k} \triangleq \sqrt{\id{k}^2 + \iq{k}^2}.
+\tag{C5}
+\label{eq:C5}
+\end{equation}
+
+\paragraph{Odvození.}
+Po aplikaci inverzní Parkovy a~inverzní Clarkovy transformace má
+okamžitý proud ve fázi $n$ ($n=1,\ldots,5$) tvar:
+
+\begin{equation}
+i_n(t) =
+  \Is{1}\cos\!\left(\theta_e - (n-1)\tfrac{2\pi}{5} + \phi_1\right)
+  + \Is{3}\cos\!\left(3\theta_e - (n-1)\tfrac{6\pi}{5} + \phi_3\right),
+\label{eq:fazovy_proud}
+\end{equation}
+
+kde $\phi_1 = \arctan(\idj/\iqj)$ a~$\phi_3 = \arctan(\idt/\iqt)$
+jsou úhly proudu v~každém rámci.
+Nejhorší okamžitá špička přes všechny polohy rotoru $\theta_e$
+a~všech pět fází je:
+
+\begin{equation}
+\max_{n,\,\theta_e} |i_n(t)| = \Is{1} + \Is{3},
+\label{eq:fazova_spicka}
+\end{equation}
+
+protože obě harmonické složky se vždy mohou setkat ve fázi
+(pro nějakou fázi $n$ a~úhel $\theta_e$) tak, aby jejich amplitudy
+sečetly.
+Omezení C5 proto zajišťuje, že žádný fázový vodič nikdy nepřekročí
+tvrdou mez $I_{\mathrm{f,max}}$ danou jmenovitým proudem výkonového
+tranzistoru nebo třídou izolace vinutí.
+
+\paragraph{Vztah k~omezení C4.}
+Omezení C4 a~C5 jsou na sobě \emph{nezávislá}.
+Z~trojúhelníkové nerovnosti plyne:
+
+\begin{equation}
+\Is{1} + \Is{3}
+\;\geq\;
+\sqrt{\Is{1}^2 + \Is{3}^2}
+\;=\; I_s.
+\end{equation}
+
+Omezení C5 je tedy vždy \emph{přísnější} než C4, jsou-li obě aktivní
+se stejnou číselnou mezí.
+V~praxi je $I_{\mathrm{f,max}}$ dáno jmenovitým proudem tranzistoru
+střídače a~$I_{\mathrm{jmen}}$ tepelným zatížením vinutí; obě hodnoty se
+mohou lišit.
+Při velkém poměru vstřikování třetí harmonické $\gamma$ se C5 stává
+aktivním dříve než C4 a~snižuje maximální dosažitelný moment oproti
+případu bez vstřikování harmonické.
+
+\paragraph{Implementace.}
+Protože rozhraní MATLAB prob-based API nepodporuje \texttt{sqrt(optimexpr)}
+symbolicky, je C5 zabaleno pomocí funkce \texttt{fcn2optimexpr}, která
+omezení vyhodnocuje numericky a~poskytuje gradienty metodou konečných
+diferencí solverem \texttt{fmincon}:
+
+\begin{lstlisting}[caption={Omezení špičkového fázového proudu pomocí fcn2optimexpr.}]
+phase_con = fcn2optimexpr( ...
+    @(a,b,c,d) sqrt(a^2 + b^2) + sqrt(c^2 + d^2), ...
+    id1_var, iq1_var, id3_var, iq3_var, ...
+    'OutputSize', [1 1]);
+prob.Constraints.phase_current = phase_con <= I_phase_max;
+\end{lstlisting}
+
+Stejný obal je použit i~v~úloze maximalizace stropu proveditelnosti,
+takže vypočtené $T_e^{\max}$ již respektuje hardwarovou mez fázového proudu.
+
+% ------------------------------------------------------------
+\section{Úplná formulace optimalizační úlohy}
+\label{sec:uplna}
+% ------------------------------------------------------------
+
+Po sestavení všech omezení má úloha MTPA pro pětifázový IPMSM
+se vstřikováním třetí harmonické tvar:
+
+\begin{equation}
+\begin{aligned}
+&\underset{\idj,\,\iqj,\,\idt,\,\iqt}{\text{minimalizovat}}
+  && \idj^2 + \iqj^2 + \idt^2 + \iqt^2 \\[4pt]
+&\text{za podmínek}\\
+&\text{(C0)} && \tfrac{5}{2}p\!\left[
+    \psipm{1}\iqj + \dL{1}\idj\iqj
+    + 3\psipm{3}\iqt + 3\dL{3}\idt\iqt
+  \right] = T_e^*, \\
+&\text{(C1)} && \idj^2 - \tfrac{\psipm{1}}{\dL{1}}\idj - \iqj^2 = 0, \\
+&\text{(C2)} && \idt^2 - \tfrac{\psipm{3}}{\dL{3}}\idt - \iqt^2 = 0, \\
+&\text{(C3)} && \tfrac{\idj}{\dL{1}\iqj} = \tfrac{\idt}{\dL{3}\iqt}, \\
+&\text{(C4)} && \idj^2 + \iqj^2 + \idt^2 + \iqt^2 \leq I_{\mathrm{jmen}}^2, \\
+&\text{(C5)} && \sqrt{\idj^2+\iqj^2} + \sqrt{\idt^2+\iqt^2}
+               \leq I_{\mathrm{f,max}}, \\
+&             && \idj \leq 0,\quad \iqj \geq 0.
+\end{aligned}
+\label{eq:uplna_uloha}
+\end{equation}
+
+Omezení C1--C3 jsou nutnými podmínkami KKT (Karush--Kuhn--Tucker)
+při neaktivních omezeních C4 a~C5.
+Jakmile se některá z~nerovností aktivuje, podmínky lokusů C1 a~C2
+přestanou platit v~neomezeném tvaru; přechod je automaticky zvládnut
+solverem \texttt{fmincon} s~algoritmem SQP.
+
+% ------------------------------------------------------------
+\section{Meze proměnných}
+\label{sec:meze}
+% ------------------------------------------------------------
+
+Znaménková omezení proměnných $\idj$ a~$\iqj$ jsou implementována
+jako boxová omezení, nikoliv jako nelineární podmínky, což umožňuje
+algoritmu SQP využívat jednodušší strukturu aktivní množiny:
+
+\begin{equation}
+-I_{\mathrm{jmen}} \leq \idj \leq 0,
+\qquad
+0 \leq \iqj \leq I_{\mathrm{jmen}},
+\qquad
+|\idt|,\,|\iqt| \leq I_{\mathrm{jmen}}.
+\label{eq:meze}
+\end{equation}
+
+Horní mez $\idj \leq 0$ vyjadřuje fyzikální skutečnost, že oslabení
+pole u~stroje IPM vždy vyžaduje odmagnetizující složku proudu v~ose $d$.
+Mez $\iqj \geq 0$ omezuje řešení na motorický kvadrant; při rekuperaci
+(záporný moment) se znaménka symetricky otočí.
+
+
+
+
+
+
+

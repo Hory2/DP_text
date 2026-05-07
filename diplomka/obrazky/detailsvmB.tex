@@ -1,0 +1,23 @@
+\begin{tikzpicture}[>=latex, font=\small]
+
+    % Osy
+    \draw[->, thick] (-2.5,0) -- (4.5,0) node[below] {$\alpha_3$};
+    \draw[->, thick] (0,-2.5) -- (0,4) node[right] {$\beta_3$};
+    \node[anchor=south west, xshift=2pt] at (0,0) {$U_{31}(U_0)$};
+
+    % Vektory na ose (U16 vpravo, U25 vlevo)
+    \draw[->, semithick] (0,0) -- (2.8,0) node[anchor=south west, inner sep=1pt] {$U_{16}$};
+    \draw[->, semithick] (0,0) -- (-1.8,0) node[anchor=north east] {$U_{25}$};
+
+    % Šikmé vektory (U29 a U24)
+    \draw[->, semithick] (0,0) -- (108:3.0) node[anchor=south east] {$U_{29}$};
+    \draw[->, semithick] (0,0) -- (288:2.2) node[anchor=north west] {$U_{24}$};
+
+    % ČERVENÝ REFERENČNÍ VEKTOR Uref3
+    \def\angRefThree{130}
+    \def\LrefThree{1.5}
+    \draw[->, very thick, red] (0,0) -- (\angRefThree:\LrefThree) node[anchor=south east, font=\bfseries] {$U_{ref3}$};
+
+
+
+\end{tikzpicture}

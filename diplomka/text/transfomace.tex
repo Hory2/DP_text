@@ -1,0 +1,238 @@
+\section{Transformace souřadnic}
+
+Definovat chování motoru lze zapsáním rovnic pro každou z fází (u 3 fázových motorů je tento prosto popisován jako $abc$ souřadnice), tento popis není pro řízení příliš praktický i proto že pokud není vyveden střední vodič z motoru je jeden ze stavu redundantní. Proto motor popisuje bud v $\alpha \beta $ souřadnicí nebo $dq$. Rozdíl $dq$ oproti $\alpha \beta$ je že souřadnice rotuji úhlovou rychlostí $\omega_{fr}$, tu zpravidla volíme jako stejnou jako úhlovou rychlost napájení $\omega_e$. Díky tomu jsou časové průběhy stavových proměněných (napětí, proud...) konstantní v ustáleném stavu. To je výhodné pro vybarvené přístupy k řízení, dochází k zjednodušení návrh regulátoru.
+
+Pokud je vinutí motoru zapojeno do hvězdy s vyvedeným středem je plné popsání motoru ještě dimenze 0, potom získáváme $\alpha \beta 0$  nebo dq0 souřadnicové systémy, ve kterých 0 souřadnice reprezentuje proud středním vodičem. 
+
+Pro 5-fázové je nutné transformace rozšířit o další 2 dimenze získáváme prostor se 4 souřadnicemi. Konkrétní zvolené transformaci se věnuji v kapitole \ref{kap:transformace}.
+
+
+
+U pětifázových motorů potřebujme pro řízení reprezentaci v $dq$, tedy průmět do 2 rotujících kolmých souřadnic. Další 2 souřadnice nemají přímý dopad na schopnost motor řídit. U vícefázových motorů pokud jsou řízeny pouze v $dq$, tak dojde ke generování 3 harmonické a jejich násobků, ta je pro pohon nežádoucí způsobuje harmonické rušení a tím ztráty\cite{letadla},\cite{analyseOfMultiphase}. Proto se další dvojce souřadnic reprezentuje právě chování 3. harmonických. Tato rovina je označována jako $dq_3$.  
+
+
+
+\subsection{Transformace $dq_{1,3}$}
+\label{kap:transformace}
+ 
+
+Transformace do $dq_{1,3}$, umožňuje v souřadnicích $dq_ 1$ kontrolovat první harmonickou a její $10n\pm1$ násobky a v souřadnicích $dq_3$  3. harmonickou s $10n\pm3$ násobky 1.harmonické. Takže můžeme přímo kontrolovat jak 1. tak 3. harmonickou.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.75\linewidth]{obrazky/ab_frame.png}
+    \caption{Souřadnicový systém a)nosné b)3.harmonické \cite{letadla}}
+    \label{fig:ukazka alfa beta 13}
+\end{figure}
+
+V \cite{analyseOfMultiphase} je pro převod jsou pro převod z $abcde$ do $\alpha \beta_{1,3}$ použity rovnice \ref{eq:acbTOab1} a \ref{eq:acbTOab3}.Kde $f_a-f_e$ odpovídají hodnotám v $abcde$ souřadnicích, reálná složka výsledku je potom $\alpha$ souřadnicí a imaginární $\beta$. Konstanta $\frac{2}{5}$ zajišťuje zachování velikost amplitudy.
+
+\begin{equation}
+\label{eq:acbTOab1}
+f_{\alpha_1 \beta_1 } \equiv \frac{2}{5} \left( f_{a} + a_5 f_{b} + a_5^2 f_{c} + a_5^3 f_{d} + a_5^4 f_{e} \right)
+\end{equation}
+
+\begin{equation}   
+\label{eq:acbTOab3}
+\begin{gathered}
+f_{\alpha_3 \beta_3 } \equiv \frac{2}{5} \left( f_{a} + a_5 f_{c} + a_5^2 f_{e} + a_5^3 f_{b} + a_5^4 f_{d} \right)\\
+a_5=e^{j2\pi/5}
+\end{gathered}
+\end{equation}
+
+\begin{equation}
+    \label{eq:abc to 0}
+    f_0=\frac{1}{5}\left( f_a +f_b+f_c+f_c+f_d+f_e\right)
+\end{equation}
+Z  $\alpha \beta _{1,3}$ je pak možné pomocí převést proměnné rotujících souřadnic $dq_{1,3}$ použitím rovnic \ref{eq:ab1to dq1} a \ref{eq:ab3to dq3}, kde $\theta$ odpovídá úhlu mezi satirickými a rotujícími $dq_1$ souřadnicemi, lze spočítat jako $\theta= \omega_{fr} \cdot t $, většinou je aproximován Z měřených parametrů motoru. Souřadnice $dq_1$ rotují na potom na stejnou rychlostí jako 1. harmonická napětí a $dq_3$ třikrát rychleji.\cite{analyseOfMultiphase}
+
+\begin{equation}
+    \label{eq:ab1to dq1}
+    f_{d_1 q_1}= f_{\alpha_1 \beta_1} \cdot e^{-j\theta}
+\end{equation}
+
+
+\begin{equation}
+    \label{eq:ab3to dq3}
+    f_{d_3 q_3}= f_{\alpha_3 \beta_3} \cdot e^{-j3\theta}
+\end{equation}
+
+\subsection{Převedení transformace na do maticového tvaru}
+Pro jednodušší práci jsem vztahy přepsal do maticových operací a vyhnul se použití komplexních čísel rozepsáním $d$ a $q$  jako další prvky, pro úplnost jsem také přidal 0 složku. Výpočet 0 složky vychází z rovnice \ref{eq:abc to 0}, je kolmá na rovinu $\alpha \beta1$ tudíž u ní neprojevuje rotace souřadnic.Nulová složka je nutná v bude nutná pro počítaní inverzí pro zpětný převod . Matice $K_{s0}$ slouží pro převod z $abcde$ do $\alpha \beta _{1,3}0$, $R_0(\theta)$ pro převod z  $\alpha \beta_{1,3}0$ do $dq_{1,3}0$ a $K_{r0}(\theta)$ pro přímý převod z $abcde$ do $dq_{1,3}0$.  
+
+\begin{equation}
+    \label{eq:Ks}
+    \begin{bmatrix}
+        f_{\alpha_1} \\ f_{\beta_1}\\ f_{\alpha_3} \\ f_{\beta_3}\\f_0
+    \end{bmatrix}
+    = 
+    \underbrace{
+    \frac{2}{5}
+    \begin{bmatrix} 
+        1 & \cos(\frac{2\pi}{5}) & \cos(\frac{4\pi}{5}) & \cos(\frac{6\pi}{5}) & \cos(\frac{8\pi}{5}) \\ 
+        0 & \sin(\frac{2\pi}{5}) & \sin(\frac{4\pi}{5}) & \sin(\frac{6\pi}{5}) & \sin(\frac{8\pi}{5}) \\ 
+        1 & \cos(\frac{6\pi}{5}) & \cos(\frac{2\pi}{5}) & \cos(\frac{8\pi}{5}) & \cos(\frac{4\pi}{5}) \\ 
+        0 & \sin(\frac{6\pi}{5}) & \sin(\frac{2\pi}{5}) & \sin(\frac{8\pi}{5}) & \sin(\frac{4\pi}{5}) \\
+        \frac{1}{2} & \frac{1}{2} &\frac{1}{2} &\frac{1}{2} &\frac{1}{2} 
+    \end{bmatrix}
+    }_{K_{s0}}
+    \begin{bmatrix}
+        f_a\\ f_b \\ f_c \\ f_d\\ f_e
+    \end{bmatrix}
+\end{equation}
+
+\begin{equation}
+     \label{eq:Rmatice}
+    \begin{bmatrix}
+        f_{d_1} \\ f_{q_1}\\ f_{d_3} \\ f_{q_3}\\f_0
+    \end{bmatrix}
+    = 
+    \underbrace{
+   \begin{bmatrix} 
+        \cos(\theta) & \sin(\theta) & 0 & 0  & 0\\ 
+        -\sin(\theta) & \cos(\theta) & 0 & 0 & 0\\ 
+        0 & 0 & \cos(3\theta) & \sin(3\theta) & 0\\ 
+        0 & 0 & -\sin(3\theta) & \cos(3\theta) & 0\\
+        0 & 0 & 0  & 0  & 1
+    \end{bmatrix}
+    }_{R_0(\theta)}
+    \begin{bmatrix}
+        f_{\alpha_1} \\ f_{\beta_1}\\ f_{\alpha_3} \\ f_{\beta_3}\\f_0
+    \end{bmatrix}
+\end{equation}
+
+\begin{equation}
+    f_{dq_{1,3}}= \underbrace{R(\theta) \cdot K_S}_{K_R(\theta)} \cdot f_{abcde}
+\end{equation}
+
+
+Pro převod opačným směrem, tedy například z $dq_{1,3}0$ do $abcde$, stačí použít inverzi požadované matice. Tyto inverze jsem spočítal dopředu aby jejich výpočet nezpomaloval chod řídícího programu. Aby bylo zřejmé že se jedná o již spočítané inverze a ne matetickou operaci budu budu tyto matice označovat jako $K_{s0-inv}$,$R_{0-inv}(\theta)$ a $K_{R-inv}(\theta)$. Například pro zmíněný pro převod  $dq_{1,3}$ do $abcde$ lze použít vztah \ref{eq:tqrsfomace zpet}, kde  $K_{R0-inv}(\theta)=K_{R0}^{-1}(\theta)$.  
+\begin{equation}
+    \label{eq:tqrsfomace zpet}
+    f_{abcde}=K_{R0-inv} \cdot f_{dq_{1,3}0}
+\end{equation}
+
+V této práci uvažuji zapojení do hvězdy bez vyvedeno středu, proto budou dále vystupovat převážně matice $K_s; K_r;K_{s-inv};K_{r-inv}$. Ty jsou submaticemi popsaných $K_{s0}; K_{r0};K_{s0-inv};K_{r0-inv}$ s vynechanými řádky případně sloupci které se vztahují právě k 0 složce.
+
+Vypočtené matice v textu pro přehlednost neuvádím, Jejich plné vyčíslení včetně výpočtu je v DOPLINT.m souboru, který je součástí elektronické přílohy,vybrané  budou i součástí textové přílohy .
+
+\section{SVPWM}
+\label{kap:svm}
+SVPWM (space vector pulse width modulation) v překladu prostorově vektorovou pulzně šířková modulace souží pro generování pozicí přepínačů střídače. SVPWM je variantou modulace, která generuje sekvenci výstupů pro všech 5 fází přímo z požadované hodnot v $\alpha \beta$ souřadnicích. V této kapitole se věnuji popisu specifické SVPWM pro pětifázový motor využívající transformace do $dq_{1,3}$ popsané v kapitole \ref{kap:transformace}.
+
+Výstup modulátoru označíme jako v, v je v našem případě 5 prvkový sloupcový vektor $u=[u_1, u_2,u_3,u_4,u_5]^T$, kde každý prvek vektoru odpovídá stavu odpovídající větve konvertoru. Pro dvouúrovňový měnič mohou jednotlivé prvky nabývat pouze hodnot  1 nebo -1. Pokud je $u_i= -1$ je připojená spodní větev konvertoru, napětí na výstupu konvertoru je napění rovno $-v_{dc}/2$. Naopak pokud $u_i= 1$, pak je připojena horní větev měniče a výstup odpovídá $v_{dc}/2$. Pro vybraný střídač je existuje 32 možných kombinací sepnutí spínačů, pokud tyto výstupy s použitím představené transformace promítneme do $\alpha \beta_{1,3}$ prostoru dostaneme možné výstupní vektory viditelné na obrázku \ref{fig:svm} z nichž se 2 překrývají jedná se nulové vektory~($u_0=[-1,-1,-1,-1,-1]$ a $ u_{31}=[1,1,1,1,1]$)  .
+
+\begin{figure}[htbp]
+     \centering
+     % První obrázek
+     \begin{subfigure}[b]{0.45\textwidth}
+         \centering
+         \input{obrazky/svm1}
+         \caption{Prostor $\alpha \, \beta \,1$ }
+         \label{fig:svm ab 1}
+     \end{subfigure}
+     \hfill % Vytvoří mezeru mezi obrázky
+     % Druhý obrázek
+     \begin{subfigure}[b]{0.45\textwidth}
+         \centering
+            \input{obrazky/svm1b}
+         \caption{Prostor $\alpha \, \beta \,3$}
+         \label{fig:svm ab 3}
+     \end{subfigure}
+     
+     
+    \caption{Rozložení výstupních vektorů }
+    \label{fig:svm}
+\end{figure}
+
+Naším cílem je vybrat z generovaných vektorů 4 nenulové a učit jak dlouho máji být tyto vektory aplikované, tak abychom jejich součet přes jedu periodu modulace odpovídal žádanému vektoru napětí $U_{\alpha \beta_{1,3}}^*$. Pro dosaženi reference v $\alpha \beta_1$ poporostu by stačily pouze 2 vektory. Protože je naším cílem sledovat referenci i 3. harmonické, náš referenční vektor je 4 prvkový a k jeho sledování jsou nutné 4 stupně volnosti(aplikační časy)  jsem nuceni vybrat 4 vektory.
+
+Generované nenulové vektory dělíme do 3 kategorií, vektory s malou střední a velkou velikostí podle jejich velikosti $\alpha \beta_1$. Jak je vidět na obrázku \ref{fig:svm} vektory s malou délkou v $\alpha \beta_1$ odpovídají nejdelším v $\alpha\beta_3$, jelikož je požadované napětí v $\alpha \beta_3$ ve většině případů rovno 0, tak vektory s malou délkou (nejdelší v $\alpha \beta_3$) nebudeme používat.
+
+Podle sektoru ve kterém se nachází reference v  $\alpha \beta_1$  jsou zvoleny vektory ohraničující tento prostor. Těch je celkem 6 z nich jsou vybrány ty s velkou a střední velikostí.
+
+\begin{figure}[htbp]
+     \centering
+     % První obrázek
+     \begin{subfigure}[b]{0.45\textwidth}
+         \centering
+         \input{obrazky/detailsvmA}
+         \caption{Popisek druhého obrázku}
+         \label{fig:vlevo}
+     \end{subfigure}
+     \hfill % Vytvoří mezeru mezi obrázky
+     % Druhý obrázek
+     \begin{subfigure}[b]{0.45\textwidth}
+         \centering
+         \input{obrazky/detailsvmB}
+         \caption{Popisek druhého obrázku}
+         \label{fig:vpravo}
+     \end{subfigure}
+     
+     \caption{Společný hlavní popisek pro oba obrázky}
+     \label{fig:cele_soumesti}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.5\linewidth]{obrazky/svm_deatil.png}
+    \caption{Ukázka výborných vektorů  pro požadované napětí v prvním sektoru a) $\alpha \beta_1$ b) v $\alpha \beta_3$ \cite{letadla}}
+    \label{fig:svm_detail}
+\end{figure}
+
+Například pro požadované napětí v sektoru 1, vybereme vektory $U_{29},U_{24},U_{16},U_{25}$ a nulové vektory $U_{0},U_{31}$. Detail vybraných vektorů je na obrázku \ref{fig:svm_detail}. 
+Pro tyto vybrané vektory je je nutné spočítat časy $t_1 -t_4$, odpovídající času po který se dané vektory aplikují, tak aby by jejich součet po dobu jedné periody odpovídal referenci. 
+Problém v $\alpha \beta_{1,3}$ lze problém zapsat rovnicí \ref{eq:svm cas ab}, kde $u_i - u_l$ jsou vybrané vektory a $T_M$  vzorkovací perioda modulátoru. 
+
+
+\begin{equation}
+    \label{eq:svm cas ab}
+    \begin{gathered}
+    V_{\alpha_13 \beta_13}^* = \frac{t_1 \cdot u_i +t_2\cdot u_j + t_3\cdot u_k + t_4\cdot u_l}{T_M} \\
+    t_1+t_2+t_3+t_4 \leq T_M
+    \end{gathered}
+\end{equation}
+
+Ve zmíněném případě, kdy je požadované napětí v prvním sektoru(obrázek \ref{fig:svm_detail}), jsou odpovídající vektory zapsané \ref{eq: prirazeni svm}.
+\begin{equation}
+\label{eq: prirazeni svm}
+   \begin{gathered}
+    u_i=U_{16};   
+    u_j=U_{24};\\
+    u_k=U_{25};
+    u_l=U_{29}
+   \end{gathered} 
+\end{equation}
+Maticově lze problém zapsat jako \ref{eq:maticove svm}, matici A pak můžeme vyjádřit jako \ref{eq:svm matica A}, kde n odpovídá číslu sektoru, $v_\alpha$ délce se střední velikostí, $v_\beta$ s velkou a $V_\gamma$  s malou  velikostí . Je důležité dodržet pořadí vektorů stejné jako u příkladu zmíněného výše.
+
+
+\begin{equation}
+    \label{eq:maticove svm}
+    U_{\alpha_13 \beta_13}^*=A \cdot 
+    \begin{bmatrix}
+        t_1\\t_2\\t_3\\t_4   
+    \end{bmatrix}
+\end{equation}
+\begin{equation}    
+    \label{eq:svm matica A}
+    A_n = \frac{1}{T_M} \begin{bmatrix} 
+    V_{\alpha} \cos \frac{(n-1)\pi}{5} & V_{\beta} \cos \frac{n\pi}{5} & V_{\beta} \cos \frac{(n-1)\pi}{5} & V_{\alpha} \cos \frac{n\pi}{5} \\ % asi lepsi cos(\gama + \frac{\pi}{5})
+    V_{\alpha} \sin \frac{(n-1)\pi}{5} & V_{\beta} \sin \frac{n\pi}{5} & V_{\beta} \sin \frac{(n-1)\pi}{5} & V_{\alpha} \sin \frac{n\pi}{5} \\
+    V_{\alpha} \cos \frac{3(n-1)\pi}{5} & -V_{\gamma} \cos \frac{3n\pi}{5} & -V_{\gamma} \cos \frac{3(n-1)\pi}{5} & V_{\alpha} \cos \frac{3n\pi}{5} \\
+    V_{\alpha} \sin \frac{3(n-1)\pi}{5} & -V_{\gamma} \sin \frac{3n\pi}{5} & -V_{\gamma} \sin \frac{3(n-1)\pi}{5} & V_{\alpha} \sin \frac{3n\pi}{5}
+    \end{bmatrix}
+\end{equation}
+
+Za předpokladu, že je známa matice $A$ a že existuje její inverze, je možné
+rovnici \ref{eq:maticove svm} převést na explicitní řešení. Ze získaného vztahu
+\ref{eq:svm casy final} lze již přímo spočítat hledané časy $t_1$ až $t_4$.
+
+\begin{equation}
+    \label{eq:svm casy final}
+      \begin{bmatrix}
+        t_1\\t_2\\t_3\\t_4   
+    \end{bmatrix}
+    = A_n^{-1}\cdot  U_{\alpha_13 \beta_13}^*
+\end{equation}
+
+Se znalostí potřebných vektorů a odpovídajících časů, pak v modulátor funguje podobně jako u fázové varianty SVPWM, vektory jsou aplikovány v pořadí aby se minimalizoval počet sepínání tranzistorů, zbytek periody jsou potom aplikovány nulové vektory. Pro moji aplikaci použiji symetrickou sekvenci s použitím obou nulové vektory.
