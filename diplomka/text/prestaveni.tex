@@ -10,10 +10,10 @@ Cílem práce je navrhnout řízení daného pohonu. Pohon se skládá z 5 fázo
     \label{fig:elekticky blokac}
 \end{figure}
 
-Blokové schéma řízení je na obrázku \ref{fig:block_control}. Řídící schéma má za cíl udržet požadované otáčky, a reagovat na primadonou změnu zátěže. Na motoru je možné měřit úhel jeho natočení, moment generovaný motorem a proud odebíraný motorem, ten odpovídá proudu statorem v práci označovaným jako $i_s$.
+Blokové schéma řízení je na obrázku \ref{fig:block_control}. Řídící schéma má za cíl udržet požadované otáčky, a reagovat na případnou změnu zátěže. Na motoru je možné měřit úhel jeho natočení, moment generovaný motorem a proud odebíraný motorem, ten odpovídá proudu statorem v práci označovaným jako $i_s$.
 
 Měrné hodnoty jsou nejdřív transformovány do $dq$ souřadnic. Regulátor na jejich základě a generuje vektor požadovaného napětí $V_{\alpha \beta_{13}}^*$ v $dq$ souřadnicích. Modulátor následně generuje sekvenci přepnutí, kterou přímo ovládá střídač.
-
+Řízení pohonu je realizováno na SoC dece Zedboard.
 
 
 \begin{figure}[ht]
@@ -38,7 +38,7 @@ Měrné hodnoty jsou nejdřív transformovány do $dq$ souřadnic. Regulátor na
     \node[block] (dq) [below=of inv] {Transformace\\ $abcde \rightarrow dq_{13}$};
     
     % šipky
-    \draw[arrow] (reg) -- node[above] {$\mathbf{V_{dq}}^*$} (mod);
+    \draw[arrow] (reg) -- node[above] {$\mathbf{V_{\alpha \beta}}^*$} (mod);
     \draw[arrow] (mod) -- (inv);
     \draw[arrow] (inv) -- (mot);
     \draw[arrow] ([xshift=-1.5cm]reg.west) -- (reg.west) 

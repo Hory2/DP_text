@@ -107,6 +107,31 @@ Pro určení poměru 1. a 3. harmonické složky existuje více přístupů pro 
 
 
 %% bacha 
+
+Skript \texttt{mtpa\_init.m} slouží k výpočtu vyhledávací tabulky (LUT) pro strategii
+řízení MTPA (\textit{Maximum Torque Per Ampere}) pětifázového synchronního motoru
+s permanentními magnety (PMSM) s injekcí třetí harmonické.
+Pro každý požadovaný moment $T_\mathrm{ref}$ je řešena optimalizační úloha --
+minimalizace kvadrátu amplitudy statorového proudu $|\mathbf{I}_s|^2 = i_d^2 + i_q^2 + i_{d3}^2 + i_{q3}^2$
+při splnění vazební podmínky rovnosti momentu a dvou proudových omezení.
+Elektromagnetický moment je modelován pomocí VSD (\textit{Virtual Space Decomposition})
+se složkami základní harmonické $(i_d,\, i_q)$ a třetí harmonické $(i_{d3},\, i_{q3})$:
+\begin{equation}
+    T = \frac{5}{2}\,p \left[ \psi_\mathrm{pm}\,i_q + (L_d - L_q)\,i_d\,i_q \right]
+      + \frac{5}{2}\,p\cdot 3 \left[ \psi_\mathrm{pm3}\,i_{q3} + (L_{d3} - L_{q3})\,i_{d3}\,i_{q3} \right],
+\end{equation}
+kde faktor $3$ u třetí harmonické plyne z toho, že příslušný podprostor rotuje úhlovou
+rychlostí $3\,\omega_e$.
+Proudová omezení zahrnují maximální špičkový fázový proud $I_\mathrm{sw,max}$
+(tepelné a vypínací omezení tranzistorů střídače) a maximální efektivní fázový proud
+$I_\mathrm{sup,max}$ (omezení napájení a vinutí).
+Špičková hodnota fázového proudu je určována numericky jako maximum průběhu
+$i_a(\vartheta) = I_1\cos(\vartheta - \varphi_1) + I_3\cos(3\vartheta - \varphi_3)$
+přes jednu elektrickou periodu.
+Optimalizační úloha je řešena funkcí \texttt{fmincon} s algoritmem SQP;
+výsledná tabulka je uložena do souboru \texttt{mtpa\_table.mat}.
+
+
 \newcommand{\Ld}[1]{L_{d#1}}
 \newcommand{\Lq}[1]{L_{q#1}}
 \newcommand{\psipm}[1]{\psi_{\mathrm{pm}#1}}
