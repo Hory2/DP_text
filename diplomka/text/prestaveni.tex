@@ -41,7 +41,7 @@ Měrné hodnoty jsou nejdřív transformovány do $dq$ souřadnic. Regulátor na
     \draw[arrow] (reg) -- node[above] {$\mathbf{V_{\alpha \beta}}^*$} (mod);
     \draw[arrow] (mod) -- (inv);
     \draw[arrow] (inv) -- (mot);
-    \draw[arrow] ([xshift=-1.5cm]reg.west) -- (reg.west) 
+    \draw[arrow] ($(reg.west)+(-1.5cm,0)$) -- (reg.west)
          node[above, pos=0.5, yshift=1mm] {$\mathbf{\omega_m^*}$};
          
     \draw[arrow] (dq.west)  -| (reg.south) 

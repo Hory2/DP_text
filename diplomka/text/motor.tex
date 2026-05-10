@@ -109,36 +109,37 @@ i_a \\ i_b \\ i_c \\ i_d \\ i_e
 
 
 \section{Mechanika motoru}
+Z mechanického pohledu jde pohon modelovat jako rotující setrvačník s momentem setrvačnosti J, který je tlumen třením. Moment generovaný třením je lineárně závislý na otáčkách motoru koeficientem b. Motor vyvíjí moment o velikosti $T_m$ a je zatížen momentem $T_L$. Rovnice pohybu motoru je dána rovnicí \ref{eq:mechanika motor}. Pro potřeby modelování ji lze převést do tvaru \ref{eq:mechanika motor2}.
+
 \begin{equation}
-J\dot{\omega} = T_1 - T_2 - b\,\omega
+    \label{eq:mechanika motor}
+J\dot{\omega} = T_m - T_L - b\,\omega
 \end{equation}
 
 \begin{equation}
-\dot{\omega} = \frac{1}{J} \,(T_1 - T_2 - b\,\omega)
+        \label{eq:mechanika motor2}
+\dot{\omega} = \frac{1}{J} \,(T_m - T_L - b\,\omega)
 \end{equation}
+
+
+\begin{equation}
+    \dot{\psi} = \omega
+\end{equation}
+
+%
+%\begin{equation}
+%    \begin{pmatrix} \dot{\psi} \\ \dot{\omega} \end{pmatrix}
+%    =
+%    \begin{pmatrix} 0 & 1 \\ 0 & -\dfrac{b}{J} \end{pmatrix}
+%    \begin{pmatrix} \psi \\ \omega \end{pmatrix}
+%    +
+%    \begin{pmatrix} 0 \\ \dfrac{1}{J} \end{pmatrix}
+%    (T_m - T_L)
+%\end{equation}
+
 \begin{equation}
 G(s) = \frac{\Omega(p)}{T(p)} = \frac{1}{Jp + b}
 \end{equation}
-
-\begin{equation}
-\dot{\omega} = \frac{T_1 - T_2 - b\,\omega}{J}
-\end{equation}
-    
-\begin{equation}
-\dot{\psi} = \omega
-\end{equation}
-
-
-\begin{equation}
-    \begin{pmatrix} \dot{\psi} \\ \dot{\omega} \end{pmatrix}
-=
-\begin{pmatrix} 0 & 1 \\ 0 & -\dfrac{b}{J} \end{pmatrix}
-\begin{pmatrix} \psi \\ \omega \end{pmatrix}
-+
-\begin{pmatrix} 0 \\ \dfrac{1}{J} \end{pmatrix}
-(T_1 - T_2)
-\end{equation}
-
 
 
 \subsection{Převod modelu do $dq_{1,3}$} a $\alpha \beta_{1,3}$
