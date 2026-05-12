@@ -5,6 +5,8 @@ Jak bylo zmíněno výše vstupy do regulátoru je měřený regulátoru jsou st
 
 
 \section{Proudová smyčka}
+
+
 \subsection{Odstranění křížové vazby}
 Přepsáním rovnice \ref{eq:model dq v final} získám diferenciální rovnici \ref{eq:ss idq s kriz} popisující proud motoru, problematický pro regulaci je člen  $- \omega[k]E \left( Li[k] + \gamma \Psi\right)$,  reprezentující zpětné elektromotorické napětí. To je problematické protože je závislé na otáčkách motoru $w$ a zároveň matice E není diagonální uzpůsobuje tedy křížovou mezi jinak nezavilými systémy. 
 
@@ -13,29 +15,66 @@ Přepsáním rovnice \ref{eq:model dq v final} získám diferenciální rovnici 
      \frac{di}{dt} = \frac{1}{L_s} \left( v_{dq_{13}} - R_s i_{dq_{13}} - \omega_{fr}E \left( L_{s}i_{dq_{13}} + \gamma \Psi_{PM}\right) \right)
 \end{equation}
 
-\begin{equation}
-    \label{eq:diskretni i}
-    i[k+1] = i[k] + \frac{T_s}{L} \left( v[k] - R \cdot i[k] - \omega[k]\cdot E \left( L\cdot i[k] + \gamma \Psi\right) \right)
-\end{equation}
+
 
 Nechtěný člen eliminuji zavedením substituce za $v[k]$ (\ref{eq:substituce v}). Substituovaný výraz je závislý na otáčkách elektrického pole ty lze spočítat s měřených otáček motoru a proudu statorem, který přímo měřím. Dosazením do rovnice \ref{eq:diskretni i} získávám systém popsaný \ref{eq:proud bez krize}, jedná se o 4 nezávisel SISO systémy prvního řádu. Pro ně stačí navrhnou 4 jednoduché regulátory.  
 
 
 \begin{equation}
 \label{eq:substituce v}
-    v[k]=u[k] +  \omega[k]E \left( Li[k] + \gamma \Psi\right)
+    v(t)=u(t) +  \omega(t) E \left(  i(t) + \gamma \Psi\right)
 \end{equation}
 
 \begin{equation}
     \label{eq:proud bez krize}
-    i[k+1] = i[k] + \frac{T_s}{L} \left( u[k] - R \cdot i[k]  \right)
+     \frac{di}{dt} = \frac{1}{L_s} \left( u_{dq_{13}} - R_s i_{dq_{13}}  \right)
+\end{equation}
+
+Při běžném provozu lze výraz xxx kopnzovat i I spožkou regulátoru, nicméně při ryclých změnách dosahuje ruglátor s kompezací lepších výsledků.
+
+\subsubsection{Návrh PI regulátoru}
+Vzhledem k tomu, že se jedná o soustavu 1. řádu, volím PI regulátor s přenosovou funkcí:
+
+\begin{equation}
+    \label{eq:PI}
+    C(p) = K_p \frac{1 + T_i p}{T_i p}
 \end{equation}
 
 
-\subsection{Návrh proudového regulátoru}
+
+Z rovnice \ref{eq:proud bez krize} lze pro každou z os odvodit přenosovou funkci soustavy:
+
+\begin{equation}
+    \label{eq:tf proud}
+    G(p) = \frac{1}{R_s + L_s p}
+\end{equation}
+
+Nulu regulátoru umístím tak, aby kompenzovala pól soustavy, tedy $T_i = L_s / R_s$.Zesílení $K_p$ jsem volil tak aby omaga řezu opovidala  ${1}/{\tau}$. výsledný prenos regulátor převdu do diskrétní podoby  s periodou vzorkování $T_s$. Získane hdonoty jsem implementoval do regulátoru v Simulinku podle rovnice \ref{eq:PI diskretni}. A manulaně doladil.
+
+\begin{equation}
+    \begin{gathered}
+    T_d=\frac{L_s}{R_s}\cdot T_s\\
+    K_p=T_i \cdot \omega_c \cdot R_s= \frac{L_s}{R_s} \cdot \frac{R_s}{L_s} \cdot R_s =R_s
+    \end{gathered}
+\end{equation}
+
+\begin{equation}
+    \label{eq:PI diskretni}
+    F_R(z^{-1}) = K_d \left(1 + \frac{1}{T_d(1 - z^{-1})}\right)
+\end{equation}
+
+
+Na obrázku \ref{}  je vidět porovnání odezvy motoru na skokovou změnnu prpudu s abe z kopanzací zpetného elektromorického napětí. Je videt že regulátor s kopmezácí méně překmitává xxxxx. Kompezace je v tomto případě jeduchá nedoť mám plnou kontrolu nad modelem motoru. Pro reláný motor kopenazce nenbude nikdy dokonalá proro jsem regulátor i včetně vsech nadřazených ladil na systému bez kopmezace a následně přidal kopmezaci, která zlepšila odezvu motoru zejména při rychlých změnách požadovaného proudu. 
+
+
+
+
+
+
 
 
 \section{Řízení momentu}
+\label{kap:MTPA}
 Cílem tohoto bloku je pro pořadovaný moment $T^*$, určný nadřazeným regulátorem rychlosti, vygenerovat požadovaný vektor proudů $i_{dq_{13}}^*$.
 
 
@@ -97,7 +136,7 @@ Model motoru v Matlabu popsaný v kapitole xxx, není PODROBNÝ. Nezohldnuje JEV
     \label{eq:moment 3rd}
          T_e = \frac{5}{2} p \cdot \left[
      \left(\Psi _{\mathrm{PM}}+i_{\mathrm{d1}}\,\left(L_{\mathrm{d1}}-L_{\mathrm{q1}}\right)\right)\,i_{\mathrm{q1}}+
-     \left( k\cdot \Psi_{PM}+ i_{\mathrm{d3}} \left(L_{\mathrm{d3}}-\,L_{\mathrm{q3}}\right)\right)3\,i_{\mathrm{q3}}\right) ]
+     \left( k\cdot \Psi_{PM}+ i_{\mathrm{d3}} \left(L_{\mathrm{d3}}-\,L_{\mathrm{q3}}\right)\right)3\,i_{\mathrm{q3}}\right]
 \end{equation}
 
 \begin{equation}
@@ -177,3 +216,22 @@ Tato MTPA tabulka zajištuje optimální využití proudu, ale je platná pouze 
 
 
 XXXXXXXXXXXX DOPSAT POZDEJI a) nebudu provozovat b)MTPV
+
+
+\section{Regulace otáček}
+Závislost otáček na momentu jak byla popsána v kapitole \ref{kap:mechanika} lze zapsat jako operátorový přenos \ref{eq:prenos mechaniky}. Pro návrh regulátoru jsem použil stejný přístup jako pro návrh proudových regulátorů. Tedy umístění nuly regulátoru tak, aby kompenzovala pól soustavy, a zesílení zajišťující frekvenci řezu odpovídající časové konstantě. Hodnoty jsem optět manuálně doladil.
+
+\begin{equation}
+    \label{eq:prenos mechaniky}
+    G(p) = \frac{1}{Jp + b}
+\end{equation}
+
+Umístěním nuly regulátoru na pól soustavy a volbou zesílení pro požadovanou frekvenci řezu $\omega_c$ získáme konstanty regulátoru jsem získal vztahy :
+
+\begin{equation}
+    \label{eq:konstanty reg otacky}
+    \begin{gathered}
+        T_i = \frac{J}{b} \\
+        K_p = J \cdot \omega_c= J \cdot \frac{b}{J}=b
+    \end{gathered}
+\end{equation}

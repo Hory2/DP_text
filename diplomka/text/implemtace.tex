@@ -39,7 +39,7 @@ Celkový počet logických buněk PL čipu XC7Z020 je 53\,200 LUT a 106\,400 klo
 \begin{table}[h]
     \centering
     \begin{tabular}{|l|r|}
-    \hline
+    \hline 
     Zdroj & Počet / Kapacita \\ \hline
     LUT (6-vstupové) & 53\,200 \\
     Klopné obvody (FF) & 106\,400 \\
@@ -53,8 +53,19 @@ Celkový počet logických buněk PL čipu XC7Z020 je 53\,200 LUT a 106\,400 klo
 \end{table}
 
 \section{Datové typy}
-v tabulece jsou shrnuty datoé typy jedlivých prměných použitých v kodu.
-
+V práccí jsem zachoval fyzikální rozměry veliční, pro genorvání HDL kodu bylo potřeba definovat datové tipy po každou z veličin.V tabulece jsou shrnuty datoé typy jedlivých prměných použitých v kodu.Úhel natočneí rotoru je v otáčkách tedy 1 odpodá $2\pi$ radiánů.
+\begin{table}[h]
+    \centering
+    \begin{tabular}{|l|c|c|c|}
+        \hline
+        \textbf{signál} & \textbf{délka [bit]} & \textbf{znaménkový} & \textbf{bitové dělení (fraction)} \\ \hline
+        proud ($i$)     & 16                  & ano (1)             & 5                                 \\ \hline
+        úhel ($ang$)    & 16                  & ne (0)              & 14                                \\ \hline
+        napětí ($u$)    & 26                  & ano (1)             & 18                                \\ \hline
+    \end{tabular}
+    \caption{datov0 tipy sisalů použité pro genFerovaní HLD }
+    \label{tab:datove_typy}
+\end{table}
 
 \section{Implemetace trasfomačních matic}
 
@@ -139,19 +150,23 @@ Jak je popsáno v kapitole~\ref{kap:svm}, pro výpočet časů sepnutí jednotli
 
 Sektor lze určit z úhlu vektoru vůči ose $\alpha_1$, to však obnáší výpočet úhlu $\gamma = arctg\left(\frac{v_\beta}{v_\alpha}\right)$. Dělení i $arctg$ jsou v HDL zbytečně složité operace, proto jsem vytořil 2D lookup tabulku, která ke každé možné kombinaci $v_{\alpha}$ a $v_{\beta}$ přiřadí odpovídající sektor.
 
-Pro výpočet časů vektorů je zapotřebí inverze matice $A_n$ (vztah~\ref{eq: prirazeni svm}). Aby se předešlo výpočtu $\sin$, $\cos$ a inverze za běhu, byla matice tak jdem dopředu vzpočítal její hodotu  pro každý z 10 sektorů. Z lookup tabulky je poté vybrána matice odpovídající danému sektoru.
+Pro výpočet časů vektorů je zapotřebí inverze matice $A_n$ (vztah~\ref{eq: prirazeni svm}). Aby se předešlo výpočtu $\sin$, $\cos$ a inverze za běhu, byly matice $A_{n-inv}$ předpočítány pro každý z 10 sektorů. Z lookup tabulky je poté vybrána matice odpovídající danému sektoru.
 
-Vynasobením pořadoavnéjho vetor s amtici $A_{n-inv}$ pak získam požadovaný čas aktivace daného vektoru. V matalbfunciton \texttt{vectortime2swtime}, je poté na základě čisla sektoru z nasavených polí vybrány akrtvní vetkry jim odpovídající kombinace spínačů. Z nich jsou spočítány časy sepnutí jednotlivých fází.
-Zbylý čas po který není aktoktivní ani jeden z vybraných vektorů je rozdělen mezi 2 nulové vektory $U_1$ a$U_{31}$.
+Vynásobením požadovaného vektoru s maticí $A_{n-inv}$ pak získám požadovaný čas aktivace daného vektoru. V Matlab funkci \texttt{vectortime2swtime} jsou poté na základě čísla sektoru z předpočítaných polí vybrány aktivní vektory a jim odpovídající kombinace spínačů. Z nich jsou spočítány časy sepnutí jednotlivých fází.
+Zbylý čas, po který není aktivní ani jeden z vybraných vektorů, je rozdělen mezi 2 nulové vektory $U_0$ a $U_{31}$.
 
 Zároveň je v bloku \texttt{vectortime2swtime} ošetřen stav, kdy vyjde záporný čas aplikace některého z vektorů. Pokud je čas aplikace některého vektoru záporný, je daný vektor nahrazen vektorem opačným.
 
-Vypočítané časy sepnutí jednotlivých fází nabývají hodnot z intervalu $\langle 0, 1 \rangle$, kde 1 odpovídá délce modulační periody. Takto normované časy jsou následně předány bloku HW interface, který z nich generuje řídicí signály jednotlivých tranzistorů.
+výstupem bloku jsou vypočítané časy sepnutí jednotlivých fází nabývají hodnot z intervalu $\langle 0, 1 \rangle$, kde 1 odpovídá délce modulační periody.Ukázak výstupu pro  $V_{dq}=[20;0;0;0]^T$  je na na obázku \ref{fig:out svm}. Takto normované časy jsou následně předány bloku HW interface, který z nich generuje řídicí signály jednotlivých tranzistorů.
 
-%% tu jsem zkoncil pokracovani priste
+\begin{figure}[h]
+    \centering
+    \includegraphics[width= 0.8 \linewidth]{obrazky/svm_t.png}
+    \caption{Ukázka generovaných časů sepnutí jednotlivých fází pro modluační index pro $V_{dq}=[20;0;0;0]^T$} 
+    \label{fig:out svm}
+\end{figure}
 
-
-\subsection{Vyvození výstupu}
+\subsection{Vyvedení výstupu modulátoru}
 Vypočítané časy sepnutí jednotlivých fází je nutné dále převést na signály pro spínání tranzistorů, případně na akční zásah pro simulátor. To zajišťuje blok \texttt{HW\_interface\_xxx}. Tento blok jsem vytvořil v několika verzích
 v závislosti na využití: pro zjednodušenou simulaci, pro simulaci včetně střídače a verze s výstupem na fyzický pin ZedBoardu.
 
@@ -159,31 +174,60 @@ Všechny bloky využívají stejného principu symetrické modulace. Symetrická
 Pokud je $ sw_i$  roven 1 na výstupu má je $\frac{V_{dc}}{2}$, pokud je roven 0 na výstupu je  $\frac{-V_{dc}}{2}$.
 Příkalad výstupu je zobarzen an obrázku \ref{fig: sym modulace}, pro npřehldenost jsou na obrázku viditelné pouze prní 2 fáze
 
-\begin{figure}
+\begin{figure}[h]
     \centering
-    %\includegraphics[width=0.75\linewidth]{name}
-    \rule{0.75\linewidth}{4cm}
-    \caption{Výstup modulátoru  pro XXX}
+    \includegraphics[width=0.75\linewidth]{obrazky/Trazisotry.png}
+    \caption{Výstup modulátoru pro horní tranzistory prvních 3 fází}
     \label{fig: sym modulace}
 \end{figure}
 
 Pro zjednušenou simulaci ja výstup jednotlivých fázi převeden přímo na napětí na dané fázi vztahem \ref{eq: sw to u}, díky tomu si mohu dovolit simuaci provádět s smuliční periodou odpovídající periodě modulace, to významně zrychluje simulaci a zjdnodušuje mi práci s osttními částmi kodu.
 \begin{equation}
     \label{eq: sw to u}
-    V=(V_dc*sw)-\frac{V_dc}{2}
+    V_i=(V_{dc}\cdot sw_i)-\frac{V_{dc}}{2}
 \end{equation}
 Pro plnou simulaci a hw výstup jsou pro každou je výtupem bloku napěrí ktré by odpovídalo výstupu střídače v daný časový okmzik, tedy bud $-V_dc/2$ nebo vde/2.
 
 
-Pro tesování poteciánlího přpojení tazistorů na výstup jsem vytvořil blok \texttt{HW\_interface\_physicalPins}, která přivadí logické  0 nebo 1 na pinny XXXX, na které by navazoval obvod s trazistory uřeným ipro spínaní jednolivých fází.
-Na obrázku \ref{fig: physical pins} je záznam z měření na osciloskopu, kde je vidět výstup z tohoto bloku. Pro zjednodušení jsou na obrázku viditelné průbehy pouze pro horní a dolní trazistor první fáze.
+Pro testování potenciálního připojení tranzistorů na výstup jsem vytvořil blok \texttt{HW\_interface\_physicalPins}, který přivádí logické 0 nebo 1 na piny JA0--JA7 a JB1--JB2, na které by navazoval obvod s tranzistory určenými pro spínání jednotlivých fází.
+Na obrázku \ref{fig: physical pins} je záznam z měření na osciloskopu, kde je vidět výstup z tohoto bloku. Pro zjednodušení jsou na obrázku viditelné průběhy pouze pro horní tranzistor první a druhé fáze. Lze vidět, že duty cycle odpovídající požadovaným hodnotám je pro první fázi 0{,}2 a pro druhou fázi 0{,}7.
+
+
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=0.75\linewidth]{obrazky/osciloskop.png}
+    \caption{Výstup měřený na fyzických pinech ZedBoardu Oranžová - pro na  první fázi $T_{sw\_1}=0.2$; Modrá - pro na  první fázi $T_{sw\_2}=0.7$ }
+    \label{fig: physical pins}
+\end{figure}    
+
+\subsection{Zpoždění při přepínání horní a dolní větve střídače}
+Protože tranzistoru trvá nějakou dobu než se zavře, implementoval jsem zpoždění na náběžné hrany signálu pro tranzistory. Tím je zajištěno, že mezi vypnutím jednoho a sepnutím druhého tranzistoru stejné větve bude vždy mezera, která zajistí, že nedojde ke zkratu mezi napájecím napětím a zemí. Délka mezery je definována parametrem \texttt{DeadTime}. Zpoždění jde pozorovat ze záznamu z osciloskopu na obrázku \ref{fig: dead time}, kde je vidět, že mezi nástupem jednoho a druhého signálu je mezera, která zajišťuje, že nedojde ke zkratu.
 
 
 \begin{figure}
     \centering
-    %\includegraphics[width=0.75\linewidth]{name}
-    \rule{0.75\linewidth}{4cm}
-    \caption{Výstup měřený na fyzických pinech ZedBoardu pro první fázi}
-    \label{fig: physical pins}
-\end{figure}    
+    \includegraphics[width=0.75\linewidth]{obrazky/placehodler.png}
+    \caption{Zpoždění mezi nástupem signálu pro horní a dolní tranzistor stejné větve střídače}
+    \label{fig: dead time}
+\end{figure}
 
+\section{Genrovaní pož. prodů}
+Jak je posáno v kapitlo \ref{kap:MTPA}, pro ueční pozadovyný proudu byla vzgenrovaníá looku p tabulka, Kvuli hdl impletavi je její použítí rozdělneé na 2 časti, nejdříve v první tavbulce  z požadnovaného momotu určen nejbližší opovídající index, ten souží pro výber opodvídjící ho vektoru proudá z duhé lookup tabulky. TYTO OPIČKY delám proto , že  indexování vícerozmětné tabulky v matlabu lze realizoavt pouze pomocí přirozenách čísel. Pro jednodušší ladenéí a kontzrlou funlkcnoszi zachovávám moment ve fyzikálkních jendotkách, výpočet bymohl být zjedušen normováním mometu.Implementace v simulinku je na obrázku \ref{fig: T gen simulink}.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.75\linewidth]{obrazky/T_gen_simulink.png}
+    \caption{Implementace generování požadovaného proudu v simulinku}
+    \label{fig: T gen simulink}
+\end{figure}
+
+zároven v je v bloku osetrenný pripaný pozadavek na zaporný moment. Pokud je moment záporný je na výstup vzbrnána větev s invezními proudy. 
+
+
+Při rychlé změně momentu dochází ke skoové změně požadoavného proudu, což v nekterých přítadech způsobovallo nestabilitu systému. Proto jsme na vstup modulu přidal filrt žádané hodoty, s časouvou konstantou 50ms.
+
+
+\subsection{nevím}
+Všecheny popsané blolky jesm nedříve vytvořil a optesoval ve spojité podobě, poté jsem vztvořil jejich verzi vhodnou pro HDL. Na HDL verzi bloků v simulinku jsem provvedl doladdění a testovnání většiny koponent. 
+
+Pro všenhy popsané bloky jsme pomocí nýástroje  matalb hdl coder vygeneroval IP cores, následeně bit steream a nejříve jednolivě, potom projené přes Matlab, otestoval jejich funkcnost na ZedBoardu. Poté jsem vyhonroval i IP core pokrývající celé vektorové řízení a otesotval finkconost celého rizení .

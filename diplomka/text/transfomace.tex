@@ -18,12 +18,31 @@ U pětifázových motorů potřebujme pro řízení reprezentaci v $dq$, tedy pr
 
 Transformace do $dq_{1,3}$, umožňuje v souřadnicích $dq_ 1$ kontrolovat první harmonickou a její $10n\pm1$ násobky a v souřadnicích $dq_3$  3. harmonickou s $10n\pm3$ násobky 1.harmonické. Takže můžeme přímo kontrolovat jak 1. tak 3. harmonickou.
 
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.75\linewidth]{obrazky/ab_frame.png}
-    \caption{Souřadnicový systém a)nosné b)3.harmonické \cite{letadla}}
-    \label{fig:ukazka alfa beta 13}
+
+\begin{figure}[htbp]
+     \centering
+     % První obrázek
+     \begin{subfigure}[b]{0.45\textwidth}
+         \centering
+         \input{obrazky/abframe1.tex}
+         \caption{Prostor 1.harmonické }
+         \label{fig:vlevo}
+     \end{subfigure}
+     \hfill % Vytvoří mezeru mezi obrázky
+     % Druhý obrázek
+     \begin{subfigure}[b]{0.45\textwidth}
+         \centering
+         \input{obrazky/ab_frame3.tex}
+         \caption{Prosotr 3.harmonické}
+         \label{fig:vpravo}
+     \end{subfigure}
+
+     \caption{Ukázak souřadnic $\alpha \, \beta$ a $dq$}
+     \label{fig:ukazka alfa beta 13}
 \end{figure}
+
+
+
 
 V \cite{analyseOfMultiphase} je pro převod jsou pro převod z $abcde$ do $\alpha \beta_{1,3}$ použity rovnice \ref{eq:acbTOab1} a \ref{eq:acbTOab3}.Kde $f_a-f_e$ odpovídají hodnotám v $abcde$ souřadnicích, reálná složka výsledku je potom $\alpha$ souřadnicí a imaginární $\beta$. Konstanta $\frac{2}{5}$ zajišťuje zachování velikost amplitudy.
 
@@ -157,7 +176,7 @@ Podle sektoru ve kterém se nachází reference v  $\alpha \beta_1$  jsou zvolen
      \begin{subfigure}[b]{0.45\textwidth}
          \centering
          \input{obrazky/detailsvmA}
-         \caption{Popisek druhého obrázku}
+         \caption{Prostor $\alpha \, \beta \,1$ }
          \label{fig:vlevo}
      \end{subfigure}
      \hfill % Vytvoří mezeru mezi obrázky
@@ -165,20 +184,15 @@ Podle sektoru ve kterém se nachází reference v  $\alpha \beta_1$  jsou zvolen
      \begin{subfigure}[b]{0.45\textwidth}
          \centering
          \input{obrazky/detailsvmB}
-         \caption{Popisek druhého obrázku}
+         \caption{Prostor $\alpha \, \beta \,3$}
          \label{fig:vpravo}
      \end{subfigure}
      
-     \caption{Společný hlavní popisek pro oba obrázky}
+     \caption{Ukáza vzbraných vektorů pro požadované napětí v prvním sektoru }
      \label{fig:cele_soumesti}
 \end{figure}
 
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.5\linewidth]{obrazky/svm_deatil.png}
-    \caption{Ukázka výborných vektorů  pro požadované napětí v prvním sektoru a) $\alpha \beta_1$ b) v $\alpha \beta_3$ \cite{letadla}}
-    \label{fig:svm_detail}
-\end{figure}
+
 
 Například pro požadované napětí v sektoru 1, vybereme vektory $U_{29},U_{24},U_{16},U_{25}$ a nulové vektory $U_{0},U_{31}$. Detail vybraných vektorů je na obrázku \ref{fig:svm_detail}. 
 Pro tyto vybrané vektory je je nutné spočítat časy $t_1 -t_4$, odpovídající času po který se dané vektory aplikují, tak aby by jejich součet po dobu jedné periody odpovídal referenci. 
