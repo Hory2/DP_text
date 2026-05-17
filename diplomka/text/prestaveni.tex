@@ -1,7 +1,7 @@
 
 \chapter{Pohon}
 \section{Představení systému}
-Cílem práce je navrhnout řízení daného pohonu. Pohon se skládá z 5 fázového synchronního motoru s permanentními magenty. Blokové schéma elektrické části pohonu je na obrázku \ref{fig:elekticky blokac}.Ten je napájen 2 stupňovým střídačem. V práci uvažuji napájení střídače ideálním stejnosměrným napětím o velikosti $V_{DC}$. Daný pohon vychází z modelu pohonu v MATLAB.
+Cílem práce je navrhnout řízení daného pohonu. Pohon se skládá z 5 fázového synchronního motoru s permanentními magenty. Blokové schéma elektrické části pohonu je na obrázku \ref{fig:elekticky blokac}.Ten je napájen 2 stupňovým střídačem. V práci uvažuji napájení střídače ideálním stejnosměrným napětím o velikosti $V_{DC}$. Daný pohon vychází z modelu pohonu v MATLAB. Motor je podrobněji popsán níže.
 
 \begin{figure}[h]
     \centering
@@ -12,7 +12,7 @@ Cílem práce je navrhnout řízení daného pohonu. Pohon se skládá z 5 fázo
 
 Blokové schéma řízení je na obrázku \ref{fig:block_control}. Řídící schéma má za cíl udržet požadované otáčky, a reagovat na případnou změnu zátěže. Na motoru je možné měřit úhel jeho natočení, moment generovaný motorem a proud odebíraný motorem, ten odpovídá proudu statorem v práci označovaným jako $i_s$.
 
-Měrné hodnoty jsou nejdřív transformovány do $dq$ souřadnic. Regulátor na jejich základě a generuje vektor požadovaného napětí $V_{\alpha \beta_{13}}^*$ v $dq$ souřadnicích. Modulátor následně generuje sekvenci přepnutí, kterou přímo ovládá střídač.
+Měrné hodnoty jsou nejdřív transformovány do $dq$ souřadnic. Regulátor na jejich základě a generuje vektor požadovaného napětí $V_{\alpha \beta_{13}}^*$ v $\alpha \beta$ souřadnicích. Modulátor následně generuje sekvenci přepnutí, kterou přímo ovládá střídač.
 Řízení pohonu je realizováno na SoC dece Zedboard.
 
 

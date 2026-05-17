@@ -1,5 +1,7 @@
 \chapter{Návrh řídícího systému}
-Jak bylo zmíněno výše vstupy do regulátoru je měřený regulátoru jsou statorový proud v $dq$ souřadnicích $i_{s_{dq13}}$, otáčky motoru $\omega_m$ a generovaný moment $T$. Na obrázku je \ref{fig:regulator blokac} je blokové schéma navrhovaného regulátoru, ten se skládá z několika bloků. Regulátor momentu na základě rozdílu mezi požadovanou a měřenou rychlostí generuje požadovaný moment $T^*$. Pro požadovaný moment je potom generován povídající vektor proudu $i_ {dq_{13}}$ ten vstupuje do proudového regulátoru, jehož výstupem už je požadované napětí $V^*_{dq_13}$, to je transformováno na $V_{\alpha \beta_{1,3}}$, které stupem do modulátoru popsaného výše.
+Jak bylo zmíněno výše vstupy do regulátoru je měřený regulátoru jsou statorový proud v $dq$ souřadnicích $i_{s_{dq13}}$, otáčky motoru $\omega_m$ a generovaný moment $T$. Na obrázku je \ref{fig:regulator blokac} je blokové schéma navrhovaného regulátoru.
+
+Jednás se o kaskádní řízení obsahující proudovou a rychlsotní smyčku. Rychlostní regulátor  na základě rozdílu mezi požadovanou a měřenou rychlostí generuje požadovaný moment $T^*$. Pro požadovaný moment je potom generován povídající vektor proudu $i_ {dq_{13}}$. Následuje proudový regulátor jehož vystupem je požadované  napětí $V^*_{dq_13}$, to je transformováno na $V_{\alpha \beta_{1,3}}$, které je vstupem do modulátoru popsaného výše. V této kapiltole jsou postupně předsatveny a poderbně  rozebrány jednolivé bloky regulační smyčky. 
 
 \input{obrazky/blokac_regulatoru}
 
@@ -7,8 +9,8 @@ Jak bylo zmíněno výše vstupy do regulátoru je měřený regulátoru jsou st
 \section{Proudová smyčka}
 
 
-\subsection{Odstranění křížové vazby}
-Přepsáním rovnice \ref{eq:model dq v final} získám diferenciální rovnici \ref{eq:ss idq s kriz} popisující proud motoru, problematický pro regulaci je člen  $- \omega[k]E \left( Li[k] + \gamma \Psi\right)$,  reprezentující zpětné elektromotorické napětí. To je problematické protože je závislé na otáčkách motoru $w$ a zároveň matice E není diagonální uzpůsobuje tedy křížovou mezi jinak nezavilými systémy. 
+\subsubsection{Odstranění křížové vazby}
+Přepsáním rovnice \ref{eq:model dq v final} získám diferenciální rovnici \ref{eq:ss idq s kriz} popisující proud motoru, problematický pro regulaci je člen  $- \omega_e(t) \left( Li(t) + \gamma \Psi\right)$,  reprezentující zpětné elektromotorické napětí. To je problematické protože je závislé na otáčkách motoru $w$ a zároveň matice E není diagonální uzpůsobuje tedy křížovou mezi jinak nezavilými systémy. 
 
 \begin{equation}
     \label{eq:ss idq s kriz}
@@ -17,7 +19,7 @@ Přepsáním rovnice \ref{eq:model dq v final} získám diferenciální rovnici 
 
 
 
-Nechtěný člen eliminuji zavedením substituce za $v[k]$ (\ref{eq:substituce v}). Substituovaný výraz je závislý na otáčkách elektrického pole ty lze spočítat s měřených otáček motoru a proudu statorem, který přímo měřím. Dosazením do rovnice \ref{eq:diskretni i} získávám systém popsaný \ref{eq:proud bez krize}, jedná se o 4 nezávisel SISO systémy prvního řádu. Pro ně stačí navrhnou 4 jednoduché regulátory.  
+Nechtěný člen eliminuji zavedením substituce za $v$ (\ref{eq:substituce v}). Substituovaný výraz je závislý na tychlosti rotace elektického pole ta lze spočítat s měřených otáček motoru jako $\omega_e=\omega_m \cdot p $, a proudu statorem, který přímo měřím. Dosazením do rovnice \ref{eq:ss idq s kriz} získávám systém popsaný \ref{eq:proud bez krize}, jedná se o 4 nezávisel SISO systémy prvního řádu. Pro ně stačí navrhnou 4 jednoduché regulátory.  
 
 
 \begin{equation}
@@ -30,7 +32,7 @@ Nechtěný člen eliminuji zavedením substituce za $v[k]$ (\ref{eq:substituce v
      \frac{di}{dt} = \frac{1}{L_s} \left( u_{dq_{13}} - R_s i_{dq_{13}}  \right)
 \end{equation}
 
-Při běžném provozu lze výraz xxx kopnzovat i I spožkou regulátoru, nicméně při ryclých změnách dosahuje ruglátor s kompezací lepších výsledků.
+Při běžném provozu lze výraz  kopnzovat i I spožkou regulátoru, nicméně při ryclých změnách dosahuje ruglátor s kompezací lepších výsledků.
 
 \subsubsection{Návrh PI regulátoru}
 Vzhledem k tomu, že se jedná o soustavu 1. řádu, volím PI regulátor s přenosovou funkcí:
@@ -49,11 +51,11 @@ Z rovnice \ref{eq:proud bez krize} lze pro každou z os odvodit přenosovou funk
     G(p) = \frac{1}{R_s + L_s p}
 \end{equation}
 
-Nulu regulátoru umístím tak, aby kompenzovala pól soustavy, tedy $T_i = L_s / R_s$.Zesílení $K_p$ jsem volil tak aby omaga řezu opovidala  ${1}/{\tau}$. výsledný prenos regulátor převdu do diskrétní podoby  s periodou vzorkování $T_s$. Získane hdonoty jsem implementoval do regulátoru v Simulinku podle rovnice \ref{eq:PI diskretni}. A manulaně doladil.
+Nulu regulátoru umístím tak, aby kompenzovala pól soustavy, tedy $T_i = L_s / R_s$.Zesílení $K_p$ jsem volil tak aby omaga řezu opovidala  ${1}/{\tau}$. výsledný prenos regulátor převdu do diskrétní podoby  s periodou vzorkování $T_s$. Získane hdonoty jsem implementoval do regulátoru v Simulinku podle rovnice \ref{eq:PI diskretni} a  manulaně doladil.
 
 \begin{equation}
     \begin{gathered}
-    T_d=\frac{L_s}{R_s}\cdot T_s\\
+    T_i=\frac{L_s}{R_s}\\  %POZOR MOZNA *Ts
     K_p=T_i \cdot \omega_c \cdot R_s= \frac{L_s}{R_s} \cdot \frac{R_s}{L_s} \cdot R_s =R_s
     \end{gathered}
 \end{equation}
@@ -64,9 +66,16 @@ Nulu regulátoru umístím tak, aby kompenzovala pól soustavy, tedy $T_i = L_s 
 \end{equation}
 
 
-Na obrázku \ref{}  je vidět porovnání odezvy motoru na skokovou změnnu prpudu s abe z kopanzací zpetného elektromorického napětí. Je videt že regulátor s kopmezácí méně překmitává xxxxx. Kompezace je v tomto případě jeduchá nedoť mám plnou kontrolu nad modelem motoru. Pro reláný motor kopenazce nenbude nikdy dokonalá proro jsem regulátor i včetně vsech nadřazených ladil na systému bez kopmezace a následně přidal kopmezaci, která zlepšila odezvu motoru zejména při rychlých změnách požadovaného proudu. 
+Na obrázku \ref{fig:bez a s cross}  je vidět porovnání odezvy motoru na skokovou změnnu prpudu s abe z kopanzací zpetného elektromorického napětí. Je videt že regulátor s kopmezácí má výrazně menší překmit a dříve se ustálí. Kompezace je v tomto případě jeduchá nedoť mám plnou kontrolu nad modelem motoru.
 
+Pro reláný motor kopenazce nenbude nikdy dokonalá proro jsem regulátor i včetně vsech nadřazených ladil na systému bez kopmezace a následně přidal kopmezaci, která zlepšila odezvu motoru zejména při rychlých změnách požadovaného proudu. 
 
+\begin{figure}[!h]
+    \centering
+\includegraphics[width =\linewidth]{obrazky/cross_compens.pdf}
+\caption{Porovnání regulace proudu s a bez kopnezace zperneoh elektormorickéh napeti}
+\label{fig:bez a s cross}
+\end{figure}
 
 
 
@@ -112,8 +121,8 @@ Pro zvolení dvojce proudu lze použít například  MTPA(maximum torque per amp
 
 
 
-\section{Injekce 3.harmonické}
-Model motoru v Matlabu popsaný v kapitole xxx, není PODROBNÝ. Nezohldnuje JEV pri kterém je pozorujeme vlliv permanenntího magenu i v rovině $dq_3$. Rovnice \ref{eq:model dq flux final}  tento jev nezohldnuje, při zhodění vlinu permanetního magenu na 3.harmonickou složku statorového indukčního toku odpovídá spíše rovnici \ref{eq:model dq flux 3}. Kde k je konstanta vyplývající z konstrukce motoru, pohybuje se většinou v rozmezí $0.2-0.3$. Tato změna $\gamma$ ovlivní i velikost momentu rovnice \ref{eq:moment dq proud} pro nový popsi neplatí, pokud vyjdu z rovnice \ref{eq:moment dq} tak po dosazení získám nový vztah pro moment \ref{eq:moment 3rd}, a z nej po úpravě \ref{eq:moment 3rd final}.
+\subsection{Injekce 3.harmonické}
+Model motoru v Matlabu popsaný v kapitole \ref{kap:model abcd}, přesný. Nezohldnuje vlliv permanenntího magenu i v rovině $dq_3$. Rovnice \ref{eq:model dq flux final}  tento jev nezohldnuje. Při zhodění vlinu permanetního magenu na 3.harmonickou složku statorového indukčního toku odpovídá spíše rovnici \ref{eq:model dq flux 3}. Kde k je konstanta vyplývající z konstrukce motoru, pohybuje se většinou v rozmezí $0.2-0.3$. Tato změna $\gamma$ ovlivní i velikost momentu rovnice \ref{eq:moment dq proud} pro nový popsi neplatí, pokud vyjdu z rovnice \ref{eq:moment dq} tak po dosazení získám nový vztah pro moment \ref{eq:moment 3rd}, a z nej po úpravě \ref{eq:moment 3rd final}.
 \begin{equation}
     \label{eq:model dq flux 3}
     \psi_{s_{dq}}=
@@ -186,9 +195,9 @@ Dále je nutné zajistit, že nebude překročen maximální proud jednotlivými
 
 %Podmínka \ref{eq:podm sw} je vždy silnější než podmínka \ref{eq:Idc max}, neboť z nerovnosti $\sqrt{A^2+B^2} \leq A + B$ (platné pro $A,\,B \geq 0$) plyne, že splnění podmínky \ref{eq:podm sw} automaticky zaručuje splnění podmínky \ref{eq:Idc max}. Podmínku \ref{eq:Idc max} proto lze z optimalizačního problému vypustit a uvažovat pouze podmínku \ref{eq:podm sw}.
 
-Z rovnice \ref{eq:moment 3rd final}, nákladové funkce \ref{eq:optimalni proud} a podmínek \ref{eq:Idc max} a \ref{eq:podm sw} vyplývá optimalizační problém, který řeším v matlabu pomocí funkce \texttt{fmincon}. Pro každý požadovaný moment $T^*$ je optimalizační problém řešen a získávám odpovídající vektor proudu $i_{dq_{13}}^*$. Výsledné hodnoty jsou uloženy do lookup tabulky, která je využívána v reálném čase pro určení referenčního vektoru proudu pro daný požadovaný moment. Vypočítané otimální proudy v závislosti na požadovaném momentu jsou zobrazeny na grafu \ref{fig:optimalni proudy}. 
+Z rovnice \ref{eq:moment 3rd final}, nákladové funkce \ref{eq:optimalni proud} a podmínek \ref{eq:Idc max} a \ref{eq:podm sw} vyplývá optimalizační problém, který řeším v matlabu pomocí funkce \texttt{fmincon}. Pro každý požadovaný moment $T^*$ je optimalizační problém řešen a získávám odpovídající vektor proudu $i_{dq_{13}}^*$. Výsledné hodnoty jsou uloženy do lookup tabulky, která je využívána v reálném čase pro určení referenčního vektoru proudu pro daný požadovaný moment. Vypočítané otimální proudy v závislosti na požadovaném momentu jsou zobrazeny na grafu \ref{fig:matpa}. 
 
-Pokud je proud genrovaný bez injece 3.harmonické, maximánlí teoreticky momnet ja 14,76~Nm, s injekcí 3.harmonické je možné generovat až 17.88~Nm. Pro nejjednodušší přístup k regulaci momentu, kdy je pouze  $i_{q1}$ nenulová, je maimalní moment pouze xx Nm.
+Pokud je proud genrovaný bez injece 3.harmonické, maximánlí teoreticky momnet ja 14,76~Nm, s injekcí 3.harmonické je možné generovat až 17,88~Nm. Pro nejjednodušší přístup k regulaci momentu, kdy je pouze  $i_{q1}$ nenulová, je maimalní moment pouze 9,8~Nm.
 
 
 \begin{figure}[!h]
@@ -212,10 +221,70 @@ Pokud je proud genrovaný bez injece 3.harmonické, maximánlí teoreticky momne
     \label{fig:matpa}
 \end{figure}
 
-Tato MTPA tabulka zajištuje optimální využití proudu, ale je platná pouze pokud otáčky motoru neřesahují definouvanou mez XXX.Pro vyšší otáčky dochází k rustu zpětného elektromotorického napětí, které může nemusí být možné potlačit napětím střídače. Napětí je saturováno na maximu a požadovaný moment není možné dosáhnout.
+Tato MTPA tabulka zajištuje optimální využití proudu, ale je platná pouze pokud otáčky motoru neřesahují definouvanou mez $\omega_{base}$.Pro vyšší otáčky dochází k rustu zpětného elektromotorického napětí, které které může překračoavt napětí zdroje. Vástup proudovného regulátor je saturován na maxmu, motor systém není schipoen dosáhonu požadovaného proudu , tedy ani momentu. Řešením je oslabovnání magentiského pole aktivním potalčením mg  toku $\psi_s$ v ose d1 a d3. tím dojde ke snížení ypetně idukového napetí v  ose q1 q3. díky tomu je pohon schpoen generovat proud a tím pádem i momnet i při vyšších otáčkách.
+
+Strategie pro určení referenčních proudů v této oblasti  $\omega >\omega_{base }$ je podbná MTPA jenom v tété situaci je hlavním cíle maximálně využít dostupné npětí \ref{eq:MTPV napeti}, Otattní podmimky pro limit proudů  \ref{ }, \ref  a výpočt  momnetu zustaváníji beze změny. 
+
+\begin{equation}
+    \label{eq:MTPV napeti}
+    \frac{1}{2} V_{dc}\geq \sqrt{V_d^2 +V_q^2}
+\end{equation}
+    
+
+\begin{equation}
+   \label{eq:MTPV cost f}
+   J=\sqrt{(V_{d1}+V_{d3})^2 + (V_{q1}+V_{q3}^2)}
+\end{equation}
+Pokud tedy otáčky motoru přesánhou wbse učenou jako kladný kořen rovnice\ref{eq:omega base}  \cite{} přenu se  genrováni refernenčních proud  z MTPA startegie na MTPV
+
+\begin{equation}
+    \label{eq:omega base}
+    \omega_{base} = \frac{-b + \sqrt{b^2 - 4ac}}{2a}
+\end{equation}
+
+kde:
+
+\begin{equation}
+    \label{eq:omega base koef}
+    \begin{aligned}
+    a &= L_{q1}^2\,i_{q1}^2 + L_{d1}^2\,i_{d1}^2 + 9L_{q3}^2\,i_{q3}^2 + 9L_{d3}^2\,i_{d3}^2
+        + \Psi_{PM}^2 + 9k^2\Psi_{PM}^2 \\
+      &\quad + 2\Psi_{PM}\,i_{d1}\,L_{d1} + 18k\,\Psi_{PM}\,i_{d3}\,L_{d3} \\[4pt]
+    b &= -2R_s\,i_{d1}\,L_{q1}\,i_{q1} + 2R_s\,i_{q1}\,L_{d1}\,i_{d1}
+        + 2R_s\,i_{q1}\,\Psi_{PM} \\
+      &\quad - 6R_s\,i_{d3}\,L_{q3}\,i_{q3} + 6R_s\,i_{q3}\,L_{d3}\,i_{d3}
+        + 6R_s\,i_{q3}\,k\,\Psi_{PM} \\[4pt]
+    c &= R_s^2\!\left(i_{q1}^2 + i_{d1}^2 + i_{q3}^2 + i_{d3}^2\right)
+        - \left(\frac{V_{dc}}{2}\right)^{\!2}
+    \end{aligned}
+\end{equation}
 
 
-XXXXXXXXXXXX DOPSAT POZDEJI a) nebudu provozovat b)MTPV
+V \cite{} je odvozeno že optimální proud id1 vycházející z výše zníněných přepokladů odopovídá lze zikat offsetem požadoavného proudu určeného MTPA o % i_{ds1}$ daný rovnicí \ref{eq:ids1 MTPV}.
+
+\begin{equation}
+    \label{eq:ids1 MTPV}
+    i_{ds1} = \frac{-2L_{d1}\Psi_{PM} + \sqrt{4L_{d1}^2\Psi_{PM}^2 - 4\!\left(L_{d1}^2 - L_{q1}^2\right)\!\left(\Psi_{PM}^2 + L_{q1}^2\hat{I}_1^2 - \dfrac{V_{dc}^2}{4\omega_{fr}^2}\right)}}{2\!\left(L_{d1}^2 - L_{q1}^2\right)}
+\end{equation}
+
+z nej lze potom dopočítat zbývající složky proudu $i_{qs1}$, $i_{qs3}$ a $i_{ds3}$ jako :
+
+\begin{equation}
+    \label{eq:iqs1 MTPV}
+    i_{qs1} = \sqrt{\hat{I}_1^2 - i_{ds1}^2}
+\end{equation}
+
+\begin{equation}
+    \label{eq:ids3 MTPV}
+    i_{d3s} = k_3\sqrt{i_{ds1}^2 + i_{qs1}^2}\;\sin\!\left(3\arctan\!\left(\frac{i_{d1}}{i_{qs1}}\right)\right)
+\end{equation}
+
+\begin{equation}
+    \label{eq:iqs3 MTPV}
+    i_{qs3} = k_3\sqrt{i_{ds1}^2 + i_{qs1}^2}\;\cos\!\left(3\arctan\!\left(\frac{i_{sd1}}{i_{qs1}}\right)\right)
+\end{equation}
+
+Konstanta $k_3$ snanovuje poměr 1. a 3. harmonické. Konsatbu volim stejně jako v \cite k=0,15. Tatometoda je výzamně závislnná na přesných paramerech motoru.
 
 
 \section{Regulace otáček}
