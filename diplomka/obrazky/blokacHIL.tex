@@ -1,0 +1,47 @@
+
+
+\begin{tikzpicture}[
+    % Styly pro jednotlivé prvky
+    block/.style={draw, rectangle, minimum width=3.5cm, minimum height=1.2cm, align=center, fill=white, font=\sffamily},
+    container/.style={draw, thick, rectangle, inner sep=15pt, fill=gray!10, rounded corners},
+    arrow/.style={-{Stealth[scale=1.2]}, thick},
+    connection/.style={font=\sffamily\small}
+]
+
+% --- ZEDBOARD (Levá strana) ---
+% Vnitřní bloky
+\node[block] (reg) {Regulátor};
+\node[block, below=0.8cm of reg] (mod) {Modulátor};
+
+% Kontejner ZedBoard
+\begin{scope}[on background layer]
+    \node[container, fit=(reg)(mod), label={[font=\sffamily\bfseries]above:ZedBoard}] (zed) {};
+\end{scope}
+
+% --- SIMULINK NA PC (Pravá strana) ---
+% Vnitřní bloky
+\node[block, right=6cm of reg] (motor) {Model motoru};
+\node[block, below=0.8cm of motor] (disp) {Zobrazení\\výsledků};
+
+% Kontejner Simulink
+\begin{scope}[on background layer]
+    \node[container, fit=(motor)(disp), label={[font=\sffamily\bfseries]above:Simulink na PC}] (simbox) {};
+\end{scope}
+
+% --- PROPOJENÍ (Ethernet) ---
+% Šipka směrem do PC (Akční zásahy)
+\draw[arrow] ([yshift=1cm]zed.east) -- ([yshift=1cm]simbox.west) 
+    node[midway, above, connection] {Akční zásahy};
+
+% Šipka směrem do ZedBoardu (Měřené veličiny)
+\draw[arrow] ($(simbox.west)+(0,-1cm)$) -- ($(zed.east)+(0,-1cm)$)
+    node[midway, below, connection] {Měřené veličiny v abcde};
+
+% Štítek sběrnice/sítě
+\node at ($(zed.east)!0.5!(simbox.west)$) [fill=white, draw=black!50, rounded corners, inner sep=4pt, font=\sffamily\bfseries\small] {Ethernet};
+
+% --- VNITŘNÍ VAZBY (Volitelné, dokreslují tok signálu uvnitř zařízení) ---
+\draw[arrow, dashed, draw=black!60] (reg) -- (mod);
+\draw[arrow, dashed, draw=black!60] (motor) -- (disp);
+
+\end{tikzpicture}

@@ -3,11 +3,308 @@
 \phantomsection
 \addcontentsline{toc}{chapter}{\listofabbrevname}
 
-\begin{acronym}[KolikMista]
+\begin{acronym}[DSP48E1]
 
-	
-	
-    \acro{i}
-      [\ensuremath{i}] % symbol
-		{statorový proud}		
+%%% Zkratky %%%
+\acro{ARM}
+    {Architektura procesoru (Advanced RISC Machine)}
+
+\acro{BRAM}
+    {Blok interní paměti FPGA (Block Random Access Memory)}
+
+\acro{DC}
+    {Stejnosměrný (Direct Current)}
+
+\acro{DSP48E1}
+    {Hardwarový blok násobiče v FPGA (Digital Signal Processing block)}
+
+\acro{FF}
+    {Klopný obvod (Flip-Flop)}
+
+\acro{HDL}
+    {Jazyk pro popis hardware (Hardware Description Language)}
+
+\acro{HIL}
+    {Hardware ve smyčce (Hardware in the Loop)}
+
+\acro{IPMSM}
+    {Synchronní motor s permanentními magnety uvnitř rotoru (Interior Permanent Magnet Synchronous Motor)}
+
+\acro{IP}
+    {Blok duševního vlastnictví pro FPGA (Intellectual Property core)}
+
+\acro{LUT}
+    {Vyhledávací tabulka (Lookup Table)}
+
+\acro{MTPA}
+    {Maximální moment na ampér (Maximum Torque Per Ampere)}
+
+\acro{MTPV}
+    {Maximální moment na volt (Maximum Torque Per Volt)}
+
+\acro{PI}
+    {Proporcionálně-integrační regulátor}
+
+\acro{PL}
+    {Programovatelná logika čipu Zynq (Programmable Logic)}
+
+\acro{PMSM}
+    {Synchronní motor s permanentními magnety (Permanent Magnet Synchronous Motor)}
+
+\acro{PS}
+    {Procesorový subsystém čipu Zynq (Processor Subsystem)}
+
+\acro{SISO}
+    {Systém s jedním vstupem a jedním výstupem (Single Input Single Output)}
+
+\acro{SoC}
+    {Systém na čipu (System on Chip)}
+
+\acro{SVPWM}
+    {Prostorově vektorová pulzně šířková modulace (Space Vector Pulse Width Modulation)}
+
+\bigskip
+\noindent\textbf{Symboly}
+\bigskip
+
+%%% Latinské symboly %%%
+
+\acro{An}
+    [\ensuremath{A_n}]
+    {Matice výstupních napěťových vektorů SVPWM pro sektor $n$}
+
+\acro{b}
+    [\ensuremath{b}]
+    {Koeficient viskózního tření \hfill [Nm\,s/rad]}
+
+\acro{E}
+    [\ensuremath{E}]
+    {Matice křížové vazby v modelu motoru v souřadnicích $dq_{1,3}$}
+
+\acro{G}
+    [\ensuremath{G(p)}]
+    {Přenosová funkce soustavy}
+
+\acro{C}
+    [\ensuremath{C(p)}]
+    {Přenosová funkce regulátoru}
+
+\acro{i}
+    [\ensuremath{i}]
+    {Statorový proud \hfill [A]}
+
+\acro{idq}
+    [\ensuremath{i_{dq_{13}}}]
+    {Vektor statorového proudu v souřadnicích $dq_{1,3}$ \hfill [A]}
+
+\acro{idqref}
+    [\ensuremath{i_{dq_{13}}^*}]
+    {Referenční (požadovaný) vektor statorového proudu \hfill [A]}
+
+\acro{ihat1}
+    [\ensuremath{\hat{I}_1}]
+    {Amplituda 1.\,harmonické fázového proudu \hfill [A]}
+
+\acro{ihat3}
+    [\ensuremath{\hat{I}_3}]
+    {Amplituda 3.\,harmonické fázového proudu \hfill [A]}
+
+\acro{IDCmax}
+    [\ensuremath{I_{DC\text{max}}}]
+    {Maximální proud odebíraný z DC zdroje \hfill [A]}
+
+\acro{iswmax}
+    [\ensuremath{i_{sw\text{-max}}}]
+    {Maximální proud tranzistorem \hfill [A]}
+
+\acro{J}
+    [\ensuremath{J}]
+    {Moment setrvačnosti rotoru \hfill [kg\,m$^2$]}
+
+\acro{Jopt}
+    [\ensuremath{J_{min}}]
+    {Nákladová funkce optimalizace MTPA \hfill [A$^2$]}
+
+\acro{k}
+    [\ensuremath{k}]
+    {Konstanta příspěvku 3.\,harmonické permanentního magnetu \hfill [--]}
+
+\acro{k3}
+    [\ensuremath{k_3}]
+    {Poměr amplitud 1.\,a 3.\,harmonické proudu (MTPV) \hfill [--]}
+
+\acro{Kp}
+    [\ensuremath{K_p}]
+    {Proporcionální zesílení regulátoru \hfill [--]}
+
+\acro{Ks0}
+    [\ensuremath{K_{s0}}]
+    {Clarkova transformační matice (včetně nulové složky) z $abcde$ do $\alpha\beta_{1,3}0$}
+
+\acro{Kr0}
+    [\ensuremath{K_{r0}(\theta)}]
+    {Transformační matice z $abcde$ do rotujících souřadnic $dq_{1,3}0$}
+
+\acro{Ks}
+    [\ensuremath{K_s}]
+    {Clarkova transformační matice (bez nulové složky) z $abcde$ do $\alpha\beta_{1,3}$}
+
+\acro{Kr}
+    [\ensuremath{K_r}]
+    {Transformační matice (bez nulové složky) z $abcde$ do $dq_{1,3}$}
+
+\acro{Las}
+    [\ensuremath{L_{A5}}]
+    {Konstanta symetrické složky vzájemné indukčnosti statoru \hfill [H]}
+
+\acro{Lb}
+    [\ensuremath{L_{B}}]
+    {Konstanta pro poloze závislé části indukčnosti statoru \hfill [H]}
+
+\acro{Ld1}
+    [\ensuremath{L_{d1},\,L_{q1}}]
+    {Indukčnosti statoru v souřadnicích $dq_1$ \hfill [H]}
+
+\acro{Ld3}
+    [\ensuremath{L_{d3},\,L_{q3}}]
+    {Indukčnosti statoru v souřadnicích $dq_3$ \hfill [H]}
+
+\acro{Lls}
+    [\ensuremath{L_{ls}}]
+    {Rozptylová indukčnost statorového vinutí \hfill [H]}
+
+\acro{Lm}
+    [\ensuremath{L_m}]
+    {Fluktuace indukčnosti statoru \hfill [H]}
+
+\acro{Ls}
+    [\ensuremath{L_s(\theta)}]
+    {Matice vzájemných indukčností statoru \hfill [H]}
+
+\acro{Ma5}
+    [\ensuremath{M_{a5}}]
+    {Matice symetrické části vzájemných indukčností statorových vinutí}
+
+\acro{Mb5}
+    [\ensuremath{M_{b5}(\theta)}]
+    {Matice poloze závislé části vzájemných indukčností statorových vinutí}
+
+\acro{Ms}
+    [\ensuremath{M_s}]
+    {Vzájemná indukčnost statorových vinutí \hfill [H]}
+
+\acro{n}
+    [\ensuremath{n}]
+    {Číslo sektoru SVPWM \hfill [--]}
+
+\acro{p}
+    [\ensuremath{p}]
+    {Počet pólových dvojic \hfill [--]}
+
+\acro{R0}
+    [\ensuremath{R_0(\theta)}]
+    {Rotační matice z $\alpha\beta_{1,3}0$ do $dq_{1,3}0$}
+
+\acro{Rs}
+    [\ensuremath{R_s}]
+    {Odpor vinutí statoru na fázi \hfill [$\Omega$]}
+
+\acro{swi}
+    [\ensuremath{sw_i}]
+    {Spínací signál tranzistoru $i$-té fáze střídače \hfill [--]}
+
+\acro{Te}
+    [\ensuremath{T_e}]
+    {Elektrický (elektromagnetický) moment motoru \hfill [Nm]}
+
+\acro{Teref}
+    [\ensuremath{T^*}]
+    {Požadovaný moment \hfill [Nm]}
+
+\acro{Ti}
+    [\ensuremath{T_i}]
+    {Integrační časová konstanta regulátoru \hfill [s]}
+
+\acro{TL}
+    [\ensuremath{T_L}]
+    {Zátěžový moment \hfill [Nm]}
+
+\acro{TM}
+    [\ensuremath{T_M}]
+    {Vzorkovací perioda modulátoru \hfill [s]}
+
+\acro{Tm}
+    [\ensuremath{T_m}]
+    {Mechanický moment motoru \hfill [Nm]}
+
+\acro{Ts}
+    [\ensuremath{T_s}]
+    {Vzorkovací perioda řízení \hfill [s]}
+
+\acro{v}
+    [\ensuremath{v}]
+    {Statorové napětí \hfill [V]}
+
+\acro{Vdc}
+    [\ensuremath{V_{dc}}]
+    {Napájecí napětí DC meziobvodu \hfill [V]}
+
+%%% Řecké symboly %%%
+
+\acro{gamma}
+    [\ensuremath{\gamma}]
+    {Vektor příspěvku rotorového magnetického toku ke statorovým tokům}
+
+\acro{theta}
+    [\ensuremath{\theta}]
+    {Elektrický úhel natočení rotoru \hfill [rad]}
+
+\acro{thetar}
+    [\ensuremath{\theta_r}]
+    {Mechanický úhel natočení rotoru \hfill [rad]}
+
+\acro{thetam}
+    [\ensuremath{\theta_m}]
+    {Měřený mechanický úhel polohy rotoru \hfill [rad]}
+
+\acro{tau}
+    [\ensuremath{\tau}]
+    {Časová konstanta filtru žádané hodnoty momentu \hfill [s]}
+
+\acro{omegafr}
+    [\ensuremath{\omega_{fr}}]
+    {Elektrická úhlová rychlost rotoru \hfill [rad/s]}
+
+\acro{omegam}
+    [\ensuremath{\omega_m}]
+    {Mechanická úhlová rychlost \hfill [rad/s]}
+
+\acro{omegamref}
+    [\ensuremath{\omega_m^*}]
+    {Požadované (referenční) otáčky \hfill [rad/s]}
+
+\acro{omegae}
+    [\ensuremath{\omega_e}]
+    {Elektrická úhlová rychlost napájecího napětí \hfill [rad/s]}
+
+\acro{omegabase}
+    [\ensuremath{\omega_{base}}]
+    {Základní (jmenovitá) rychlost \hfill [rad/s]}
+
+\acro{omegac}
+    [\ensuremath{\omega_c}]
+    {Frekvence řezu regulátoru \hfill [rad/s]}
+
+\acro{psi}
+    [\ensuremath{\psi}]
+    {Magnetický tok \hfill [Wb]}
+
+\acro{PsiPM}
+    [\ensuremath{\Psi_{PM}}]
+    {Toková vazba permanentního magnetu \hfill [Wb]}
+
+\acro{a5}
+    [\ensuremath{a_5}]
+    {Základní fázor pětifázové soustavy, $a_5 = e^{j2\pi/5}$ \hfill [--]}
+
 \end{acronym}

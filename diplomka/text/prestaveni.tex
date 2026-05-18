@@ -1,18 +1,20 @@
 
-\chapter{Pohon}
-\section{Představení systému}
-Cílem práce je navrhnout řízení daného pohonu. Pohon se skládá z 5 fázového synchronního motoru s permanentními magenty. Blokové schéma elektrické části pohonu je na obrázku \ref{fig:elekticky blokac}.Ten je napájen 2 stupňovým střídačem. V práci uvažuji napájení střídače ideálním stejnosměrným napětím o velikosti $V_{DC}$. Daný pohon vychází z modelu pohonu v MATLAB. Motor je podrobněji popsán níže.
+\chapter{Popis řízeného pohonu}
+Kapitola popisuje základní části potřebné pro návrh regulátoru. Je představena topologie pohonu. Nejdříve jsou popsány použité transformace do $dq_{1,3}$. Je představen matematický model pětifázového motoru s permanentními magnety a jeho rovnice převedeny do $dq_{1,3}$. Dále je představen koncept prostorově vektorové pulzně šířkové modulace, pomocí které je generováno požadované napětí.
+
+\section{Blokové schéma pohonu}
+Cílem práce je navrhnout řízení daného pohonu. Pohon se skládá z 5 fázového synchronního motoru s permanentními magenty. Blokové schéma elektrické části pohonu je na obrázku \ref{fig:elekticky blokac}. Ten je napájen 2 stupňovým střídačem. V práci uvažuji napájení střídače ideálním stejnosměrným napětím o velikosti $V_{DC}$. Na motoru je možné měřit jednotlivá fázová napětí $V_a - V_e$ a proudy $i_a - i_e$. V práci neuvažuji spínací ztráty ani vnitřní odpory tranzistorů. V simulaci jsou tranzistory považovány za dokonalé spínače.  Daný pohon vychází z modelu pohonu v MATLAB. Motor je podrobněji popsán níže.
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=\linewidth]{obrazky/electric.drawio.png}
+    \includegraphics[width=\linewidth]{obrazky/electric.drawio (1).png}
     \caption{Blokové elektrické schéma pohonu}
     \label{fig:elekticky blokac}
 \end{figure}
 
 Blokové schéma řízení je na obrázku \ref{fig:block_control}. Řídící schéma má za cíl udržet požadované otáčky, a reagovat na případnou změnu zátěže. Na motoru je možné měřit úhel jeho natočení, moment generovaný motorem a proud odebíraný motorem, ten odpovídá proudu statorem v práci označovaným jako $i_s$.
 
-Měrné hodnoty jsou nejdřív transformovány do $dq$ souřadnic. Regulátor na jejich základě a generuje vektor požadovaného napětí $V_{\alpha \beta_{13}}^*$ v $\alpha \beta$ souřadnicích. Modulátor následně generuje sekvenci přepnutí, kterou přímo ovládá střídač.
+Měřené hodnoty jsou nejdříve transformovány do $dq$ souřadnic. Regulátor na jejich základě a generuje vektor požadovaného napětí $V_{\alpha \beta_{13}}^*$ v $\alpha \beta$ souřadnicích. Modulátor následně generuje sekvenci přepnutí, kterou přímo ovládá střídač.
 Řízení pohonu je realizováno na SoC dece Zedboard.
 
 

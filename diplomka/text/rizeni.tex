@@ -7,7 +7,7 @@ Jednás se o kaskádní řízení obsahující proudovou a rychlsotní smyčku. 
 
 
 \section{Proudová smyčka}
-
+Cílem regulátoru je udržovat vektor proudu na požadované hodnotě, problém je rozdělen na regulaci proudu v jednotlivých souřadnicích zvlášť. Příspěvek od ostatních složek je buď kompenzován pomocí substituce, nebo považován za poruchu a je kompenzován I složkou regulátoru. V kapitole jsou představeny a porovnány oba přístupy.
 
 \subsubsection{Odstranění křížové vazby}
 Přepsáním rovnice \ref{eq:model dq v final} získám diferenciální rovnici \ref{eq:ss idq s kriz} popisující proud motoru, problematický pro regulaci je člen  $- \omega_e(t) \left( Li(t) + \gamma \Psi\right)$,  reprezentující zpětné elektromotorické napětí. To je problematické protože je závislé na otáčkách motoru $w$ a zároveň matice E není diagonální uzpůsobuje tedy křížovou mezi jinak nezavilými systémy. 
@@ -223,7 +223,7 @@ Pokud je proud genrovaný bez injece 3.harmonické, maximánlí teoreticky momne
 
 Tato MTPA tabulka zajištuje optimální využití proudu, ale je platná pouze pokud otáčky motoru neřesahují definouvanou mez $\omega_{base}$.Pro vyšší otáčky dochází k rustu zpětného elektromotorického napětí, které které může překračoavt napětí zdroje. Vástup proudovného regulátor je saturován na maxmu, motor systém není schipoen dosáhonu požadovaného proudu , tedy ani momentu. Řešením je oslabovnání magentiského pole aktivním potalčením mg  toku $\psi_s$ v ose d1 a d3. tím dojde ke snížení ypetně idukového napetí v  ose q1 q3. díky tomu je pohon schpoen generovat proud a tím pádem i momnet i při vyšších otáčkách.
 
-Strategie pro určení referenčních proudů v této oblasti  $\omega >\omega_{base }$ je podbná MTPA jenom v tété situaci je hlavním cíle maximálně využít dostupné npětí \ref{eq:MTPV napeti}, Otattní podmimky pro limit proudů  \ref{ }, \ref  a výpočt  momnetu zustaváníji beze změny. 
+Strategie pro určení referenčních proudů v této oblasti  $\omega >\omega_{base }$ je podbná MTPA jenom v tété situaci je hlavním cíle maximálně využít dostupné npětí \ref{eq:MTPV napeti}, Otattní podmimky pro limit proudů  \ref{eq:podm sw}, \ref{eq:isw max} výpočt  momnetu zustaváníji beze změny.
 
 \begin{equation}
     \label{eq:MTPV napeti}
@@ -235,7 +235,7 @@ Strategie pro určení referenčních proudů v této oblasti  $\omega >\omega_{
    \label{eq:MTPV cost f}
    J=\sqrt{(V_{d1}+V_{d3})^2 + (V_{q1}+V_{q3}^2)}
 \end{equation}
-Pokud tedy otáčky motoru přesánhou wbse učenou jako kladný kořen rovnice\ref{eq:omega base}  \cite{} přenu se  genrováni refernenčních proud  z MTPA startegie na MTPV
+Pokud tedy otáčky motoru přesánhou wbse učenou jako kladný kořen rovnice\ref{eq:omega base}  \cite{fieldVeak} přenu se  genrováni refernenčních proud  z MTPA startegie na MTPV
 
 \begin{equation}
     \label{eq:omega base}
@@ -260,7 +260,7 @@ kde:
 \end{equation}
 
 
-V \cite{} je odvozeno že optimální proud id1 vycházející z výše zníněných přepokladů odopovídá lze zikat offsetem požadoavného proudu určeného MTPA o % i_{ds1}$ daný rovnicí \ref{eq:ids1 MTPV}.
+V \cite{fieldVeak} je odvozeno že optimální proud id1 vycházející z výše zníněných přepokladů odopovídá lze zikat offsetem požadoavného proudu určeného MTPA o % i_{ds1}$ daný rovnicí \ref{eq:ids1 MTPV}.
 
 \begin{equation}
     \label{eq:ids1 MTPV}
@@ -284,7 +284,7 @@ z nej lze potom dopočítat zbývající složky proudu $i_{qs1}$, $i_{qs3}$ a $
     i_{qs3} = k_3\sqrt{i_{ds1}^2 + i_{qs1}^2}\;\cos\!\left(3\arctan\!\left(\frac{i_{sd1}}{i_{qs1}}\right)\right)
 \end{equation}
 
-Konstanta $k_3$ snanovuje poměr 1. a 3. harmonické. Konsatbu volim stejně jako v \cite k=0,15. Tatometoda je výzamně závislnná na přesných paramerech motoru.
+Konstanta $k_3$ snanovuje poměr 1. a 3. harmonické. Konsatbu volim stejně jako v \cite{fieldVeak}, $k_3 = 0{,}15$. Tatometoda je výzamně závislnná na přesných paramerech motoru.
 
 
 \section{Regulace otáček}

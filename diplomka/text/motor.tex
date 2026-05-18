@@ -14,13 +14,15 @@ OBRÁZEK PMSM
     \begin{tabular}{|l|l|r l|}
     \hline
     Název proměnné & Zkratka & Hodnota & ~          \\     \hline
-    Typ vinutí & -- & Star-wound        & ~       \\    
-    Počet pólových dvojic & $p$ & 8     &~        \\    
-    Toková vazba permanentního magnetu & $\psi_{\mathrm{PM}}$ & 0.04366& Wb            \\    
-    Vlastní indukčnost statoru na fázi & $L_s$ & 0.0002& H        \\    
-    Fluktuace indukčnosti statoru & $L_m$ & -0.00002 & H        \\    
-    Vzájemná indukčnost statoru & $M_s$ & 0.00002 &H      \\    
-    Odpor statoru na fázi & $R_s$ & 0.010087 & $\Omega$               \\
+    Typ vinutí & -- & Star-wound        & ~       \\
+    Počet pólových dvojic & $p$ & 3     &~        \\
+    Toková vazba PM pro 1. harmonickou & $\psi_{\mathrm{PM}}$ & 0.04366& Wb            \\
+    Toková vazba PM pro 3. harmonickou & $\psi_{\mathrm{PM_3}}$ & 0.01310& Wb            \\
+    Indukčnost statoru v ose $d$ (1. harmonická) & $L_{d_1}$ & 0.00039& H        \\
+    Indukčnost statoru v ose $q$ (1. harmonická) & $L_{q_1}$ & 0.00078& H        \\
+    Indukčnost statoru v ose $d$ (3. harmonická) & $L_{d_3}$ & 0.00010& H        \\
+    Indukčnost statoru v ose $q$ (3. harmonická) & $L_{q_3}$ & 0.00010& H        \\
+    Odpor statoru na fázi & $R_s$ & 0.0190087 & $\Omega$               \\
     \hline
     \end{tabular}
     \caption{Parametry synchronního motoru s permanentními magnety}
@@ -29,21 +31,17 @@ OBRÁZEK PMSM
 \subsection{Výhody vícefázových motorů}
 %Multi-phase drives offer some distinct advantages over their three-phase drive counterparts. The major advantages of using a multi-phase machine instead of a three-phase machine are described in [17–42]: higher torque density [22–26]; reduced torque pulsations [1, 27]; greater fault tolerance [27–38]; reduction in the required rating per inverter leg (and therefore simpler and more reliable power conditioning equipment) [39, 40]; and better noise characteristics, higher phase, number yield smoother torque due to the simultaneous increase of the frequency of the torque pulsation, and reduction of the torque ripple magnitude [41, 42]. Multi-phase drives are still unsuitable for general purpose drives application and thus their application areas are restricted to some critical domains such as ship propulsion, more-electric aircraft, hybrid electric vehicles, electric traction, and battery powered electric vehicles [43–48]. The reasons behind this are primarily two-fold. In high power applications (i.e. ship propulsion), the use of multi-phase drives enables reduction of the required power rating per inverter leg (phase). This is a major advantage over the converter end side, as lower switch ratings can handle reduced per-phase power. In high power applications, series and/or parallel combinations of power electronics switches are required to process large amounts of power. The series/parallel combination of switches poses the problem of static and dynamic voltage and current sharing. Thus reduced per-phase power is very attractive in this application. In safety-critical applications (i.e. more-electric aircraft), the use of multi-phase drives enables greater fault tolerance, which is of paramount importance. It has been shown that the loss of one or two phases has little impact on drive behavior. Finally, in electric vehicles and hybrid electric vehicle applications, use of multi-phase drives for propulsion enables reduction of the required semiconductor switch current rating; although these drives are not characterized by high power, low voltage availability in vehicles makes the current high.\cite{WileyHigPer}
 
-Vícefázové pohony mají oproti klasickým trojfázovým řadu výhod. Oproti klasickým 3 fázovým motorům dosahují výší výkonové hustoty (poměr maximálního generovaného výkonu k hmotnosti motoru, genrovaný  moment  méně osciluje, generuji méně šumu. Zároveň jsou je možné je provozovat i při poruše na jedné z fází\cite{}. Vícefázové pohony se nepoužívají pro běžné instalace, jejich využiji je především pro kritické aplikace, jako je například pohony lodí, eklektické letouny, elektromobily a lokomotivy. 
+Vícefázové pohony mají oproti klasickým trojfázovým řadu výhod. Oproti klasickým 3 fázovým motorům dosahují vyšší výkonové hustoty (poměr maximálního generovaného výkonu k hmotnosti motoru), generovaný moment méně osciluje, generují méně šumu. Zároveň je možné je provozovat i při poruše na jedné z fází\cite{WileyHigPer}. Vícefázové pohony se nepoužívají pro běžné instalace, jejich využití je především pro kritické aplikace, jako je například pohon lodí, elektrické letouny, elektromobily a lokomotivy.
 
-Výkon přenášený do mootru je rozdělen do více fází, to předsatvuje výhodu u pohonů z vysokým výkonem. Rordelení proudu do  vice větví zpusobobuje snížení maximálního proudu tekoucí jedou větví (fází) střídače. To snižuje požadavky na jednotlivé polovodičové snímače, čímž se snižují cena celého pohonu.  
+Výkon přenášený do motoru je rozdělen do více fází, to představuje výhodu u pohonů s vysokým výkonem. Rozdělení proudu do více větví způsobuje snížení maximálního proudu tekoucího jednou větví (fází) střídače. To snižuje požadavky na jednotlivé polovodičové prvky, čímž se snižuje cena celého pohonu.
 
-Dalším využití vícefázový pohonu je potom v kritických aplikacích (např.~letouny). Vícefázové pohony zvládají bez větších obtíží fungovat i při výpadku jedné či dvou fází. \cite{WileyHigPer}
+Dalším využitím vícefázového pohonu je potom oblast kritických aplikací (např.~letouny). Vícefázové pohony zvládají bez větších obtíží fungovat i při výpadku jedné či dvou fází. \cite{WileyHigPer}
 
 \subsection{Matematický model motoru}
 \label{kap:model abcd}
 
-Vztah mezi napětím a proudem lze vyjádřit  z rovnice \ref{eq:model abc u}, jako sučet ubynapětí zpusobeným odporem vinutí a  $\frac{d\psi_i}{dt}$ odpovídjícímu  derivacím magnetického toku statoru $\psi_i$.
+Vztah mezi napětím a proudem lze vyjádřit  z rovnice \ref{eq:model abc u}, jako součet úbytku napětí způsobeného odporem vinutí a  $\frac{d\psi_i}{dt}$ odpovídajícímu  derivacím magnetického toku statoru $\psi_i$.
 
-Magentickáý tok statorm  je podle rovnice \ref{eq:fluxabc} závislý na proudech statorem,  matici vzájemných indukčností $L_S(\theta)$ a příspěvku od rotorovém magnetickém toku $\psi_{im}$ vtaženého ke statoru.
-
-
-\cite{malab_motor},\cite{Model_5phase}
 
 \begin{equation}
     \label{eq:model abc u}
@@ -64,6 +62,8 @@ Magentickáý tok statorm  je podle rovnice \ref{eq:fluxabc} závislý na proude
     \frac{d\psi_e}{dt}
 \end{bmatrix}
 \end{equation}
+
+Magnetický tok statoru je podle rovnice \ref{eq:fluxabc} závislý na proudech statoru, matici vzájemných indukčností $L_S(\theta)$ a příspěvku od rotorového magnetického toku $\psi_{im}$ vztaženého ke statoru.\cite{malab_motor},\cite{Model_5phase}
 
 \begin{equation}
     \label{eq:fluxabc}
@@ -128,9 +128,10 @@ J\dot{\omega} = T_m - T_L - b\,\omega
 \dot{\omega} = \frac{1}{J} \,(T_m - T_L - b\,\omega)
 \end{equation}
 
+uhel naotcnin motru je pak  odpovídá integarci optáček motoru.
 
 \begin{equation}
-    \dot{\psi} = \omega
+    \dot{\theta}_m = \omega
 \end{equation}
 
 %
@@ -147,16 +148,16 @@ J\dot{\omega} = T_m - T_L - b\,\omega
 
 
 
-\subsection{Převod modelu motoru do $dq_{1,3}$} a $\alpha \beta_{1,3}$
-Model z kapitoly \ref{kap:model abcd} obsahuje množství nelineárních funkcí, v maticích $L_s$ a $\gamma$. Tyto matice jsou funkcí úhlu $\theta$,který je proměnný v čase. Tento tvar popisu motoru není vhodný pro návrh řízení vektorovéh řízení motoru, i implementaci prostorově vektorové pulzně šířkové modulace. 
+\subsection{Převod modelu motoru do $dq_{1,3}$ a $\alpha \beta_{1,3}$}
+Model z kapitoly \ref{kap:model abcd} obsahuje množství nelineárních funkcí, v maticích $L_s$ a $\gamma$. Tyto matice jsou funkcí úhlu $\theta$,který je proměnný v čase. Tento tvar popisu motoru není vhodný pro návrh vektorového řízení motoru ani implementaci prostorově vektorové pulzně šířkové modulace. 
 
-Cílem této kyitoly je  aplikoavt představenou transformaci na model motoru, ten nejdříve převedu do $\alpha \beta_{1,2}$ a následně $dq_{1,3}$. Získat tak model motoru v $dq_{1,3}$.
+Cílem této kapitoly je  aplikovat představenou transformaci na model motoru, ten nejdříve převedu do $\alpha \beta_{1,3}$ a následně $dq_{1,3}$. Získat tak model motoru v $dq_{1,3}$.
 
-V kapitole je uvedno pouze odvození a ukazány  výsledky, násboení jedntlivýhc matic jsem provdel v prostředí matlab využitím sybmolzc toolboxu. Masobení jedtlivých maitic je součascí skriptu COJAVIM.m, ktrý je součastí elektronické přílohy.
+V kapitole je uvedeno pouze odvození a ukázány výsledky, násobení jednotlivých matic jsem provedl v prostředí matlab využitím symbolic toolboxu. Násobení jednotlivých matic je součástí skriptu odvozeni.mlx, který je součástí elektronické přílohy.
 
 \subsubsection{abcde do $\alpha \beta_{1,3}$}
-Pro převod modelu do $\alpha \beta$ vyšel z rovnic v abcde ve kterých jsem nahradil stavy reprezentované v abcde  prostoru použitím vztahu $f_{abcde}=K_{S}^{inv} \cdot f_{\alpha \beta}$. 
-U rovnice  pro statorové napětí \ref{eq:model abc u} po dosazení a roznásobí celé rovnice maticí $K_S$ získám vztah \ref{eq:model U allfa beta} který je podobný původnímu. 
+Pro převod modelu do $\alpha \beta$ jsem vyšel z rovnic v abcde ve kterých jsem nahradil stavy reprezentované v abcde  prostoru použitím vztahu $f_{abcde}=K_{S}^{inv} \cdot f_{\alpha \beta}$.
+U rovnice  pro statorové napětí \ref{eq:model abc u} po dosazení a roznásobení celé rovnice maticí $K_S$ získám vztah \ref{eq:model U allfa beta} který je podobný původnímu. 
 
 \begin{equation}
     \label{eq:model U allfa beta}
@@ -186,7 +187,7 @@ Výpočet magenrického tokuk vzvolaného statorem spočivá pouze v dosazení.
     \psi_{m \alpha \beta}=\underbrace{K_S\gamma}_{\gamma_{s}} \cdot \Psi_{PM}
 \end{equation}
 
-\subsubsection{Převod modelu do dq}
+\subsubsection{Převod modelu do dq} 
 
 
 Pro rovnici statorového napětí jsem vyšel z rovnice \ref{eq:model U allfa beta} v  $\alpha \beta$, všechny signály jsem převedl do $dq_{1,3}$ využitím vztahu $ f_{\alpha \beta 1,3} = R(\theta)^{ivn}  \cdot f_{dq13} $. Dosazením jsem získal rovnici \ref{eq:prevod1} a následným vyjádřením derivace součinu jsem došel k rovnici \ref{eq:prevod2}.
@@ -224,7 +225,7 @@ Po dosazení $\theta=\omega_{fr}\cdot t$, do matice R jsem získal tvar k deriva
     \end{bmatrix}}_{E}\psi_{sdq}+\frac{d\psi_{sdq}}{dt}
 \end{equation}
 
-Pro rovnici magnetický tok od rotoru jsem vyšel z rovnice \ref{eq:flux rotace abc} popisující tok v abcde, pokud je vektor magnetického toku zarovnaný s d souřadnicí (uhel natočení elektrického pole $\theta_e=0$ právě tehdy když je na fázi a maximální napětí), výraz po dosazení a vyjádření značně zjednoduší (vztah\ref{eq:flux rotace dq}), všechny složky vektoru $\gamma$ kromě první jsou nulové. 
+Pro rovnici magnetický tok od rotoru jsem vyšel z rovnice \ref{eq:flux rotace abc} popisující tok v abcde, pokud je vektor magnetického toku zarovnaný s d souřadnicí (úhel natočení elektrického pole $\theta_e=0$ právě tehdy když je na fázi a maximální napětí), výraz po dosazení a vyjádření značně zjednoduší (vztah\ref{eq:flux rotace dq}), všechny složky vektoru $\gamma$ kromě první jsou nulové. 
 
 
 \begin{equation}

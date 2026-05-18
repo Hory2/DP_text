@@ -104,10 +104,15 @@
 %\drafttrue   % zapnuto
  \draftfalse % vypnuto
 
+\usepackage{booktabs}
+\usepackage{threeparttable}
+\usepackage{tablefootnote}
 \usepackage{tikz}
 \usetikzlibrary{arrows.meta}
 \usetikzlibrary{positioning}
 \usetikzlibrary{calc}
+\usetikzlibrary{fit}
+\usetikzlibrary{backgrounds}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%      Definice informací o dokumentu             %%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -204,14 +209,12 @@
 \include{text/uvod}
 
 %%% Vložení souboru 'text/cile.tex' s úvodem
-\include{text/prestaveni}
 %%% Vložení souboru 'text/reseni' s popisem řešení práce
 % (rozdělte na více souborů či kapitol, pokud je vhodné)
 \include{text/reseni}
 
 %%% Vložení souboru 'text/vysledky' s popisem vysledků práce
 % (rozdělte na více souborů či kapitol, pokud je vhodné)
-\include{text/vysledky}
 
 
 \include{text/implemtace}
