@@ -2,8 +2,19 @@
 \phantomsection
 \addcontentsline{toc}{chapter}{Závěr}
 
-Učlem práce bylo popsat na implmentoavat vektorové říení synchrnního motoru s permanetními magnety a následném otestování na simulovaném motoru. 
+Cílem práce bylo popsat a implementovat vektorové řízení synchronního motoru s permanentními magnety a jeho otestování na simulovaném motoru. V práci jsem nejprve popsal převod do $dq_{1\,3}$ a $\alpha \beta_{1\,3}$ s využitím Parkovy a Clarkovy transformace rozšířené o prostor reprezentující 3.~harmonickou složku, pro potřeby 5-fázových pohonů. Z něj jsem připravil matice pro snadný přechod mezi jednotlivými popisy.
 
+Je představen řízený pohon, popsány rovnice popisující jeho chování reprezentované pro každou fázi.
+Model jsem použitím představené transformace převedl do prostoru $dq_{1\,3}$, který je vhodný pro návrh vektorového řízení.
 
-uskali 
+V práci jsem použil prostorově vektorovou pulzně šířkovou modulaci. Podle sektoru ve kterém se vektor nachází vybírám nejdelší a střední vektory v prostoru reprezentující první harmonickou. Vypočtené časy jsou převedeny na časy sepnutí fází, ty jsou použitím symetrické modulace aplikovány.
 
+Proud je regulován v $dq$. Pro regulaci proudu jsem navrhl PI regulátor a otestoval jeho chování. Přidání členu kompenzujícího křížovou vazbu jsem ověřil lepší regulaci s menšími překmity.
+
+Pro generování proudové reference z požadovaného momentu jsem použil MTPA algoritmus generující maximální moment na ampér odebíraný ze zdroje. Pro maximalizaci momentu jsem použil verzi využívající injekci 3.~harmonické. Čímž jsem dosáhl přibližně o 20\,\% vyššího momentu oproti použití pouze prostoru 1.~harmonické, a dokonce 90\,\% oproti nejjednoduššímu způsobu využívajícímu pouze $q$ složku 1.~harmonické, jak je ukázáno například v Matlab ukázce řízení 5-fázového motoru.
+
+Pro regulaci otáček jsem stejně jako u proudu použil diskrétní verzi PI regulátoru. Navržený regulátor zvládá rychle regulovat na skok požadované rychlosti i změnu zatížení motoru.
+
+Po otestování funkčnosti jsem v Simulinku funkce upravil na verze vhodné pro generování HDL kódu. Zadefinoval a nastavil datové typy jednotlivých operací. Pro jednotlivé bloky a poté i pro celek jsem vygeneroval IP jádra. Ta jsem nahrál a otestoval na cílovém hardwaru. Navržené řešení využití dostupných zdrojů asi na 80\,\%, a tím zajišťuje kvalitní regulaci.
+
+Jelikož nemám k dispozici fyzický motor, ani podobný model, nemohl jsem řízení ověřit v praxi. Návrh jsem ověřoval pouze na modelu, který jsem si na základě známých rovnic a simscape modelu, který však nesimuluje vliv 3.~harmonické. Dá se tedy předpokládat, že při implementaci na reálném motoru by bylo nutné regulátory doladit.

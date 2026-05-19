@@ -1,15 +1,14 @@
 %bez editace
 \section{Motor}
-Práce se zabývá řízením 5 fázového synchronního motoru s permanentními magnety, konkrétně IPMSM(Interior Permanent Magnet Synchronous Machine) tedy motor s magenty umístěnými uvnitř motor. Konkrétní parametry jsou shrnuty v tabulce~\ref{tab:param_motoru}.  
+Práce se zabývá řízením pěticifázového synchronního motoru s permanentními magnety, konkrétně IPMSM (Interior Permanent Magnet Synchronous Machine), tedy motoru s magnety umístěnými uvnitř rotoru. Konkrétní parametry jsou shrnuty v tabulce~\ref{tab:param_motoru}.
 
-
-Njednoduššší konfikurace perifáorvé PMSM motoru má rotor motrou je permanntní magent. Na staroru je umístěno rovnoměrně po po $72\deg$ rozmístěno 5  satorových vinutí. Jdenolivé fáze jsou označeny a,b,c,d,e. Konce vinutí jsou spojeny do hvězdy.
-Fáze jsou napájeny sřidavýn sinusovým napětím. Npětí na jdnotlivých fázácj sjou navájem posunutá také o 72 deg.
+Nejjednodušší konfigurace pěticifázového PMSM má rotor tvořený permanentním magnetem. Na statoru je rovnoměrně rozmístěno 5 statorových vinutí po $72^\circ$. Jednotlivé fáze jsou označeny a, b, c, d, e. Konce vinutí jsou spojeny do hvězdy.
+Fáze jsou napájeny střídavým sinusovým napětím. Napětí na jednotlivých fázích jsou navzájem posunutá také o $72^\circ$.
 
 OBRÁZEK PMSM 
 
 
-\begin{table}[h]
+\begin{table}[htbp]
     \centering
     \begin{tabular}{|l|l|r l|}
     \hline
@@ -82,7 +81,7 @@ Magnetický tok statoru je podle rovnice \ref{eq:fluxabc} závislý na proudech 
 \end{equation}
 
 
-Přepočt magentického toku pemanrtního magnetu z na jehon staotrové přispěvky je možné momocí rovnice \ref{eq:flux rotace abc}. Tok je závislý na magnetickém toku rotoru vyvoleném permanentními magenty $\psi_{PM}$ rotoru a jeho natočení vuči jednolivým vinutím  $ \theta_r$ (rovnice \ref{eq:flux rotace abc}).
+Přepočet magnetického toku permanentního magnetu na jeho statorové příspěvky je možné pomocí rovnice \ref{eq:flux rotace abc}. Tok je závislý na magnetickém toku rotoru vyvolaném permanentními magnety $\psi_{PM}$ rotoru a jeho natočení vůči jednotlivým vinutím $\theta_r$ (rovnice \ref{eq:flux rotace abc}).
 
 \begin{equation}
     \label{eq:flux rotace abc} 
@@ -104,7 +103,7 @@ Přepočt magentického toku pemanrtního magnetu z na jehon staotrové přispě
 \cdot \Psi_{PM}
 \end{equation}
 
-Matice $L_S(\theta)$ je pak dána rovnicí \ref{eq:model abc induknost},kde matice $I$ je jednotková matice distribuující rozptzlovou iudukčncost jedolivých vinutí vinutí $L_{ls}$. Matice $M_{a5}$ ppřpočírává vzájmené indukčnosti staotrových cívek mezi sebou. Polsední člen přidává vzajemnou indukčnot ovlivněnoenzávisou na poloze rotoru, matice  $M_{b5}$ složí k přepočtu Indukčnostní a je funkcí $\theta$.  
+Matice $L_S(\theta)$ je pak dána rovnicí \ref{eq:model abc induknost}, kde matice $I$ je jednotková matice distribuující rozptylovou indukčnost jednotlivých vinutí $L_{ls}$. Matice $M_{a5}$ přepočítává vzájemné indukčnosti statorových cívek mezi sebou. Poslední člen přidává vzájemnou indukčnost závislou na poloze rotoru; matice $M_{b5}$ slouží k přepočtu indukčnosti a je funkcí $\theta$.
 
 \begin{equation}
     \label{eq:model abc induknost}
@@ -128,7 +127,7 @@ J\dot{\omega} = T_m - T_L - b\,\omega
 \dot{\omega} = \frac{1}{J} \,(T_m - T_L - b\,\omega)
 \end{equation}
 
-uhel naotcnin motru je pak  odpovídá integarci optáček motoru.
+Úhel natočení motoru pak odpovídá integraci otáček motoru.
 
 \begin{equation}
     \dot{\theta}_m = \omega
@@ -151,7 +150,7 @@ uhel naotcnin motru je pak  odpovídá integarci optáček motoru.
 \subsection{Převod modelu motoru do $dq_{1,3}$ a $\alpha \beta_{1,3}$}
 Model z kapitoly \ref{kap:model abcd} obsahuje množství nelineárních funkcí, v maticích $L_s$ a $\gamma$. Tyto matice jsou funkcí úhlu $\theta$,který je proměnný v čase. Tento tvar popisu motoru není vhodný pro návrh vektorového řízení motoru ani implementaci prostorově vektorové pulzně šířkové modulace. 
 
-Cílem této kapitoly je  aplikovat představenou transformaci na model motoru, ten nejdříve převedu do $\alpha \beta_{1,3}$ a následně $dq_{1,3}$. Získat tak model motoru v $dq_{1,3}$.
+Cílem této kapitoly je aplikovat představenou transformaci na model motoru. Ten nejdříve převedu do $\alpha \beta_{1,3}$ a následně do $dq_{1,3}$, čímž získám model motoru v $dq_{1,3}$.
 
 V kapitole je uvedeno pouze odvození a ukázány výsledky, násobení jednotlivých matic jsem provedl v prostředí matlab využitím symbolic toolboxu. Násobení jednotlivých matic je součástí skriptu odvozeni.mlx, který je součástí elektronické přílohy.
 
@@ -164,7 +163,7 @@ U rovnice  pro statorové napětí \ref{eq:model abc u} po dosazení a roznásob
     v_{s \alpha\beta{1,3}}=R_S \cdot i_{s \alpha \beta_{1,3}} + \frac{d\psi_{s\alpha \beta_{1,3}}}{dt}
 \end{equation}
 
-Rovnice pro statorový indukční tok vychází z \ref{eq:fluxabc} ze které dosazením získám rovnici \ref{eq:flux mezikrok}. Porotže   $ L_s(\theta)$ nené konstanou  ale maticí výraz rovnice je o něoc složitějš než v předchozím případě. Po roznásobení rovnice  maticí $K_S$ zleva a dostávm  vztah \ref{eq:flux alfa beta}.
+Rovnice pro statorový indukční tok vychází z \ref{eq:fluxabc}, ze které dosazením získám rovnici \ref{eq:flux mezikrok}. Protože $L_s(\theta)$ není konstantou, ale maticí, je výraz rovnice o něco složitější než v předchozím případě. Po roznásobení rovnice maticí $K_S$ zleva dostávám vztah \ref{eq:flux alfa beta}.
 
 
 
@@ -181,16 +180,16 @@ Rovnice pro statorový indukční tok vychází z \ref{eq:fluxabc} ze které dos
 \end{equation}
 
 
-Výpočet magenrického tokuk vzvolaného statorem spočivá pouze v dosazení.
+Výpočet magnetického toku vyvolaného statorem spočívá pouze v dosazení.
 \begin{equation}
     \label{eq:model rotorflux alfa beta}
     \psi_{m \alpha \beta}=\underbrace{K_S\gamma}_{\gamma_{s}} \cdot \Psi_{PM}
 \end{equation}
 
-\subsubsection{Převod modelu do dq} 
+\subsubsection{Převod modelu do $dq$}
 
 
-Pro rovnici statorového napětí jsem vyšel z rovnice \ref{eq:model U allfa beta} v  $\alpha \beta$, všechny signály jsem převedl do $dq_{1,3}$ využitím vztahu $ f_{\alpha \beta 1,3} = R(\theta)^{ivn}  \cdot f_{dq13} $. Dosazením jsem získal rovnici \ref{eq:prevod1} a následným vyjádřením derivace součinu jsem došel k rovnici \ref{eq:prevod2}.
+Pro rovnici statorového napětí jsem vyšel z rovnice \ref{eq:model U allfa beta} v $\alpha \beta$, všechny signály jsem převedl do $dq_{1,3}$ využitím vztahu $f_{\alpha \beta 1,3} = R(\theta)^{inv} \cdot f_{dq13}$. Dosazením jsem získal rovnici \ref{eq:prevod1} a následným vyjádřením derivace součinu jsem došel k rovnici \ref{eq:prevod2}.
 
 
 \begin{equation}
@@ -225,7 +224,7 @@ Po dosazení $\theta=\omega_{fr}\cdot t$, do matice R jsem získal tvar k deriva
     \end{bmatrix}}_{E}\psi_{sdq}+\frac{d\psi_{sdq}}{dt}
 \end{equation}
 
-Pro rovnici magnetický tok od rotoru jsem vyšel z rovnice \ref{eq:flux rotace abc} popisující tok v abcde, pokud je vektor magnetického toku zarovnaný s d souřadnicí (úhel natočení elektrického pole $\theta_e=0$ právě tehdy když je na fázi a maximální napětí), výraz po dosazení a vyjádření značně zjednoduší (vztah\ref{eq:flux rotace dq}), všechny složky vektoru $\gamma$ kromě první jsou nulové. 
+Pro rovnici magnetický tok od rotoru jsem vyšel z rovnice \ref{eq:flux rotace abc} popisující tok v abcde, pokud je vektor magnetického toku zarovnaný s d souřadnicí (úhel natočení elektrického pole $\theta_e=0$ právě tehdy když je na fázi a maximální napětí), výraz po dosazení a vyjádření značně zjednoduší (vztah~\ref{eq:flux rotace dq}), všechny složky vektoru $\gamma$ kromě první jsou nulové. 
 
 
 \begin{equation}
@@ -239,7 +238,7 @@ Pro rovnici magnetický tok od rotoru jsem vyšel z rovnice \ref{eq:flux rotace 
 
 
 
-U statorové magnetického toku je situace podobná jakou převodu do $\alpha \beta$. V případě transformace do $dq$ po roznásobení rovnice \ref{eq:model abc induknost} se celý výpočet $L_s$ významně zjednoduší na výraz \ref{eq: modle indukcnost dq}.       
+U statorového magnetického toku je situace podobná jako u převodu do $\alpha \beta$. V případě transformace do $dq$ po roznásobení rovnice \ref{eq:model abc induknost} se celý výpočet $L_s$ významně zjednoduší na výraz \ref{eq: modle indukcnost dq}.       
 
 
 \begin{equation}
@@ -267,7 +266,7 @@ U statorové magnetického toku je situace podobná jakou převodu do $\alpha \b
 
 %%% po dosazeni
 
-Po dosazeni a úpravě rovnic statorového, rotorového indukčního toku a statorové  indukčnosti v dq, \ref{eq:flux rotace dq} až \ref{eq: modle indukcnost dq}, jsem získal rovnice \ref{eq:model dq flux final}. Pro z dalších výpočtu sem statorový indukční tok dosadil do rovnice statorového napětí \ref{eq:model dq v} čímž jsem došel ke vztahu \ref{eq:model dq v final}, který motor plně popisuje. Tyto rovnice jsou nezávislé na úhlu $\theta$, tedy i časově invariantní a všechny matice kromě matice E jsou diagonální. Získané rovnice jsou lineární a vhodné pro návrh řízení.
+Po dosazení a úpravě rovnic statorového, rotorového indukčního toku a statorové indukčnosti v $dq$, \ref{eq:flux rotace dq} až \ref{eq: modle indukcnost dq}, jsem získal rovnice \ref{eq:model dq flux final}. Pro další výpočty jsem statorový indukční tok dosadil do rovnice statorového napětí \ref{eq:model dq v}, čímž jsem došel ke vztahu \ref{eq:model dq v final}, který motor plně popisuje. Tyto rovnice jsou nezávislé na úhlu $\theta$, tedy i časově invariantní a všechny matice kromě matice E jsou diagonální. Získané rovnice jsou lineární a vhodné pro návrh řízení.
 
 
 

@@ -52,7 +52,7 @@
 
 % Svislice z motoru
 \draw let \p1=(M.south), \p2=(M.south) in
-    (\x1,\y1) -- (\x1,\y1-1.60cm);
+    (\x1,\y1) -- (\x1,\y1-4.50cm);
 
 % i_abcde -> T2 (svisle dolu pak vlevo)
 \node[anchor=west, font=\small]
@@ -68,11 +68,11 @@
 \draw[arrow] let \p1=(M.south), \p2=(T2.north) in
     (\x1,\y1-0.75cm) -- (\x2,\y1-0.75cm) -- (T2.north);
 
-% omega -> Sw (prima zpetna vazba)
+% omega -> Sw (zpetna vazba vedena pod T2)
 \node[anchor=west, font=\small]
-    at ($(M.south)+(0,-1.60)$) {$\omega_m$};
+    at ($(M.south)+(0,-4.50)$) {$\omega_m$};
 \draw[arrow] let \p1=(M.south), \p2=(Sw.south) in
-    (\x1,\y1-1.60cm) -- (\x2,\y1-1.60cm) -- (Sw.south);
+    (\x1,\y1-4.50cm) -- (\x2,\y1-4.50cm) -- (Sw.south);
 
 \end{tikzpicture}%
 }
