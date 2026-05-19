@@ -195,7 +195,27 @@ Dále je nutné zajistit, že nebude překročen maximální proud jednotlivými
 
 Z rovnice \ref{eq:moment 3rd final}, nákladové funkce \ref{eq:optimalni proud} a podmínek \ref{eq:Idc max} a \ref{eq:podm sw} vyplývá optimalizační problém, který řeším v matlabu pomocí funkce \texttt{fmincon}. Pro každý požadovaný moment $T^*$ je optimalizační problém řešen a získávám odpovídající vektor proudu $i_{dq_{13}}^*$. Výsledné hodnoty jsou uloženy do lookup tabulky, která je využívána v reálném čase pro určení referenčního vektoru proudu pro daný požadovaný moment. Vypočítané optimální proudy v závislosti na požadovaném momentu jsou zobrazeny na grafu \ref{fig:matpa}. 
 
-Pokud je proud generovaný bez injekce 3.~harmonické, maximální teoretický moment je 14,76~Nm, s injekcí 3.~harmonické je možné generovat až 17,88~Nm. Pro nejjednodušší přístup k regulaci momentu, kdy je pouze $i_{q1}$ nenulová, je maximální moment pouze 9,8~Nm.
+
+
+Tabulka~\ref{tab:porovnani moment} shrnuje dosažitelné maximální momenty
+pro tři srovnávané strategie. Nárůst maximálního momentu o přibližně 21\,\% oproti MTPA bez injekce a přibližně o 90\,\% oproti jednoduššímu přístupu.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lccc}
+\toprule
+\textbf{Strategie} & $T_{\max}$ [Nm]  & Využití $dq_3$  \\
+\midrule
+Pouze $i_{q1}$                  &  9{,}8   & ne \\
+MTPA bez injekce 3.~harmonické  & 14{,}76 & ne \\
+MTPA s injekcí 3.~harmonické    & 17{,}88  & ano \\
+\bottomrule
+\end{tabular}
+\caption{Porovnání strategií generování momentu pro použitý motor}
+\label{tab:porovnani moment}
+\end{table}
+
+
 
 
 \begin{figure}[!h]
@@ -303,3 +323,4 @@ Umístěním nuly regulátoru na pól soustavy a volbou zesílení pro požadova
         K_p = J \cdot \omega_c= J \cdot \frac{b}{J}=b
     \end{gathered}
 \end{equation}
+

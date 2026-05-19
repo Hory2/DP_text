@@ -1,11 +1,12 @@
 %bez editace
 \section{Motor}
-Práce se zabývá řízením pěticifázového synchronního motoru s permanentními magnety, konkrétně IPMSM (Interior Permanent Magnet Synchronous Machine), tedy motoru s magnety umístěnými uvnitř rotoru. Konkrétní parametry jsou shrnuty v tabulce~\ref{tab:param_motoru}.
+Práce se zabývá řízením pěticifázového synchronního motoru s permanentními magnety, konkrétně IPMSM (Interior Permanent Magnet Synchronous Machine), tedy motoru s magnety umístěnými uvnitř rotoru. Oproti variantě s povrchovými magnety (SPMSM) vykazuje IPMSM 
+magnetickou salienci ($L_d \neq L_q$), která umožňuje generovat reluktanční 
+moment a dosáhnout vyšší výkonové hustoty.
 
-Nejjednodušší konfigurace pěticifázového PMSM má rotor tvořený permanentním magnetem. Na statoru je rovnoměrně rozmístěno 5 statorových vinutí po $72^\circ$. Jednotlivé fáze jsou označeny a, b, c, d, e. Konce vinutí jsou spojeny do hvězdy.
+Na statoru je rovnoměrně rozmístěno 5 statorových vinutí po $72^\circ$. Jednotlivé fáze jsou označeny a, b, c, d, e. Konce vinutí jsou spojeny do hvězdy.
 Fáze jsou napájeny střídavým sinusovým napětím. Napětí na jednotlivých fázích jsou navzájem posunutá také o $72^\circ$.
-
-OBRÁZEK PMSM 
+Konkrétní parametry jsou shrnuty v tabulce~\ref{tab:param_motoru}.
 
 
 \begin{table}[htbp]
@@ -147,14 +148,14 @@ J\dot{\omega} = T_m - T_L - b\,\omega
 
 
 
-\subsection{Převod modelu motoru do $dq_{1,3}$ a $\alpha \beta_{1,3}$}
+\subsection{Převod modelu motoru do \texorpdfstring{$dq_{1,3}$}{dq1,3} a \texorpdfstring{$\alpha \beta_{1,3}$}{alpha beta 1,3}}
 Model z kapitoly \ref{kap:model abcd} obsahuje množství nelineárních funkcí, v maticích $L_s$ a $\gamma$. Tyto matice jsou funkcí úhlu $\theta$,který je proměnný v čase. Tento tvar popisu motoru není vhodný pro návrh vektorového řízení motoru ani implementaci prostorově vektorové pulzně šířkové modulace. 
 
 Cílem této kapitoly je aplikovat představenou transformaci na model motoru. Ten nejdříve převedu do $\alpha \beta_{1,3}$ a následně do $dq_{1,3}$, čímž získám model motoru v $dq_{1,3}$.
 
 V kapitole je uvedeno pouze odvození a ukázány výsledky, násobení jednotlivých matic jsem provedl v prostředí matlab využitím symbolic toolboxu. Násobení jednotlivých matic je součástí skriptu odvozeni.mlx, který je součástí elektronické přílohy.
 
-\subsubsection{abcde do $\alpha \beta_{1,3}$}
+\subsubsection{abcde do \texorpdfstring{$\alpha \beta_{1,3}$}{alpha beta 1,3}}
 Pro převod modelu do $\alpha \beta$ jsem vyšel z rovnic v abcde ve kterých jsem nahradil stavy reprezentované v abcde  prostoru použitím vztahu $f_{abcde}=K_{S}^{inv} \cdot f_{\alpha \beta}$.
 U rovnice  pro statorové napětí \ref{eq:model abc u} po dosazení a roznásobení celé rovnice maticí $K_S$ získám vztah \ref{eq:model U allfa beta} který je podobný původnímu. 
 
@@ -186,7 +187,7 @@ Výpočet magnetického toku vyvolaného statorem spočívá pouze v dosazení.
     \psi_{m \alpha \beta}=\underbrace{K_S\gamma}_{\gamma_{s}} \cdot \Psi_{PM}
 \end{equation}
 
-\subsubsection{Převod modelu do $dq$}
+\subsubsection{Převod modelu do \texorpdfstring{$dq$}{dq}}
 
 
 Pro rovnici statorového napětí jsem vyšel z rovnice \ref{eq:model U allfa beta} v $\alpha \beta$, všechny signály jsem převedl do $dq_{1,3}$ využitím vztahu $f_{\alpha \beta 1,3} = R(\theta)^{inv} \cdot f_{dq13}$. Dosazením jsem získal rovnici \ref{eq:prevod1} a následným vyjádřením derivace součinu jsem došel k rovnici \ref{eq:prevod2}.
@@ -293,3 +294,11 @@ Po dosazení a úpravě rovnic statorového, rotorového indukčního toku a sta
     \label{eq:model dq v final}
     v_{dq_{13}} = R_s i_{dq_{13}}+ \omega_{fr}E \left( L_{s}i_{dq_{13}} + \gamma \Psi_{PM}\right) + \frac{di_{dq_{13}}}{dt} Ls
 \end{equation}
+
+
+
+\subsection{Simulace motoru}
+Pro simulaci motoru v simulinku jsem v práci původně plánoval využít hotový Simscape model 5 fázového PMSM motoru, který je součástí knihovny simscape electronics. Ten jsem ale využil pouze pro testování modulátoru a kostry proudového regulátoru. Na další části jelikož během testování jsem zjistil že motor nesimuluje chování 3. harmonické a pro další práci jej nebylo možné využít. 
+
+Vytvořil jsem proto na základě odvozených rovnic vlastní zjednodušený model. Vstupem je napětí v $abcde$, výstupy má stejné jako simscape varianta. Implementace je však plně pod moji kontrolou. Pro model jsem využil odvozených rovnic v $dq_{1\,3}$. Chování mého modelu při využití první harmonické jsem ověřil vůči simscape ekvivalentu. Chování složky třetí 
+harmonické ověřit nelze, neboť není k dispozici referenční model ani naměřená data reálného motoru.

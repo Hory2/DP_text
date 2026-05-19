@@ -15,6 +15,6 @@ Pro generování proudové reference z požadovaného momentu jsem použil MTPA 
 
 Pro regulaci otáček jsem stejně jako u proudu použil diskrétní verzi PI regulátoru. Navržený regulátor zvládá rychle regulovat na skok požadované rychlosti i změnu zatížení motoru.
 
-Po otestování funkčnosti jsem v Simulinku funkce upravil na verze vhodné pro generování HDL kódu. Zadefinoval a nastavil datové typy jednotlivých operací. Pro jednotlivé bloky a poté i pro celek jsem vygeneroval IP jádra. Ta jsem nahrál a otestoval na cílovém hardwaru. Navržené řešení využití dostupných zdrojů asi na 80\,\%, a tím zajišťuje kvalitní regulaci.
+Po otestování funkčnosti jsem v Simulinku funkce upravil na verze vhodné pro generování HDL kódu. Zadefinoval a nastavil datové typy jednotlivých operací. Pro jednotlivé bloky a poté i pro celek jsem vygeneroval IP jádra. To jsem nahrál a otestoval na cílovém hardwaru. V práci jsem cílil na co největší využití výpočetních kapacit, navržené řešení využití dostupných zdrojů asi na 90\,\%. Úpravou přesnosti datových typů by potenciálně šla náročnost snížit za cenu horší regulace.
 
 Jelikož nemám k dispozici fyzický motor, ani podobný model, nemohl jsem řízení ověřit v praxi. Návrh jsem ověřoval pouze na modelu, který jsem si na základě známých rovnic a simscape modelu, který však nesimuluje vliv 3.~harmonické. Dá se tedy předpokládat, že při implementaci na reálném motoru by bylo nutné regulátory doladit.
