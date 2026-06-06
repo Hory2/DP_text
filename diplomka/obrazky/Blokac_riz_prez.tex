@@ -1,0 +1,80 @@
+\begin{figure}[h]
+\centering
+\resizebox{ \textwidth}{!}{%
+\begin{tikzpicture}[
+    block/.style  = {draw, rectangle, minimum height=1.8cm, minimum width=2.0cm, align=center},
+    sum/.style    = {draw, circle, minimum size=0.85cm, inner sep=0pt},
+    arrow/.style  = {->, thick},
+    node distance = 0.5cm and 0.9cm
+]
+
+% Dopredna cesta
+\node (wref)                          {$\omega^*$};
+\node[sum,   right=of wref]    (Sw)   {};
+\node[block, right=of Sw]      (Rw)   {PI regulátor\\otáček};
+\node[block, right=of Rw]      (MTPA) {MTPA};
+\node[sum,   right=of MTPA]    (Si)   {};
+\node[block, right=of Si]      (Ri)   {PI regulátor\\proudu};
+\node[block, right=of Ri]      (T1)   {$dq_{13}{\to}$\\ $\alpha\beta_{13}$};
+\node[block, right=of T1]      (SVM)  {SVM\\modulátor};
+\node[block, right=of SVM]     (HW)   {HW\\ interface};
+\node[block, right=1.4cm of HW](M)    {Simulace\\motoru};
+
+% Zpetnovazebni transformacni blok
+\node[block, below=2.0cm of T1] (T2) {$abcde{\to}dq_{13}$};
+
+% Uzel mereneho proudu
+\node[below=1.1cm of Si] (im) {$i_{dq_{13}}$};
+
+% Znamienka sumacnich uzlu
+\node[above left=2pt of Sw] {$+$};
+\node[below left=2pt of Sw] {$-$};
+\node[above left=2pt of Si] {$+$};
+\node[below left=2pt of Si] {$-$};
+
+% Sipky dopredne cesty
+\draw[arrow] (wref) -- (Sw);
+\draw[arrow] (Sw)   -- (Rw);
+\draw[arrow] (Rw)   -- node[above]{$T^*$} (MTPA);
+\draw[arrow] (MTPA) -- node[above]{$i^*_{dq_{13}}$} (Si);
+\draw[arrow] (Si)   -- (Ri);
+\draw[arrow] (Ri)   -- node[above]{$V^*_{dq_{13}}$} (T1);
+\draw[arrow] (T1)   -- node[above]{$V^*_{\alpha\beta_{13}}$} (SVM);
+\draw[arrow] (SVM)  -- node[above]{$t_{sw}$} (HW);
+\draw[arrow] (HW)   -- node[above]{$V_{abcde}$} (M);
+
+% Proud do sumacniho uzlu
+\draw[arrow] (im) -- (Si);
+
+% T2 -> im (vystup transformace do uzlu mereni proudu)
+\draw[arrow] let \p1=(T2.west), \p2=(im.south) in
+    (T2.west) -- (\x2,\y1) -- (im.south);
+
+% Svislice z motoru
+\draw let \p1=(M.south), \p2=(M.south) in
+    (\x1,\y1) -- (\x1,\y1-4.50cm);
+
+% i_abcde -> T2 (svisle dolu pak vlevo)
+\node[anchor=west, font=\small]
+    at ($(M.south)+(0,-2.80)$) {$i_{abcde}$};
+\draw[arrow] let \p1=(M.south), \p2=(T2.east) in
+    (\x1,\y1-0.30cm) -- (\x1,\y2) -- (T2.east);
+
+% theta -> T1 a T2 (spolecna vodorovna trasa, pak vetve)
+\node[anchor=west, font=\small]
+    at ($(M.south)+(0,-0.75)$) {$\theta$};
+\draw[arrow] let \p1=(M.south), \p2=(T1.south) in
+    (\x1,\y1-0.75cm) -- (\x2,\y1-0.75cm) -- (T1.south);
+\draw[arrow] let \p1=(M.south), \p2=(T2.north) in
+    (\x1,\y1-0.75cm) -- (\x2,\y1-0.75cm) -- (T2.north);
+
+% omega -> Sw (zpetna vazba vedena pod T2)
+\node[anchor=west, font=\small]
+    at ($(M.south)+(0,-4.50)$) {$\omega_m$};
+\draw[arrow] let \p1=(M.south), \p2=(Sw.south) in
+    (\x1,\y1-4.50cm) -- (\x2,\y1-4.50cm) -- (Sw.south);
+
+\end{tikzpicture}%
+}
+
+\end{figure}

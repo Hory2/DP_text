@@ -2,17 +2,17 @@
 \phantomsection
 \addcontentsline{toc}{chapter}{Úvod}
 Synchronní motory s permanentními magnety (PMSM) nacházejí stále širší uplatnění
-v průmyslových pohonech, elektromobilitě a letectví. Pětifázová varianta oproti běžné 3 fázovým dosahuje větší hustoty momentu a plynulejšího průběhu momentu. Další výhodou je vyšší odolnost vůči poruchám, motor je možné provozovat i při poruše některé z fází.
+v průmyslových pohonech, elektromobilitě a letectví. Pětifázová varianta oproti běžné 3 fázovým dosahuje větší hustoty momentu a plynulejšího průběhu momentu. Další výhodou je vyšší odolnost vůči poruchám, motor je možné provozovat i při poruše některé z fází. Ve srovnání s asynchronními motory dosahují PMSM vyšší účinnosti díky absenci odporových ztrát v rotoru.
 
-Práce se zabývá návrhem vektorového řízení pro pětifázový motor s permanentními magnety. V práci je rozebrána transformace pro převod signálu do prostoru $\alpha \, \beta_{13}$ pomocí Clarkovy transformace rozšířené o prostor 3. harmonické. Následně i do $dq_{13}$ využitím podobného ekvivalentu Clarkovy transformace. Pro obě transformace jsou odvozeny převodní matice, včetně matic pro převod zpět na jednotlivé fáze.
+Práce se zabývá návrhem vektorového řízení pro pětifázový motor s permanentními magnety. V práci je rozebrána transformace pro převod signálu do prostoru $\alpha \, \beta_{13}$ pomocí Clarkovy transformace rozšířené o prostor 3. harmonické. Následně i do $dq_{13}$ využitím podobného ekvivalentu Clarkovy transformace. Pro obě transformace jsou odvozeny převodní matice, včetně matic pro převod zpět na jednotlivé fáze. Transformace do rotujícího $dq$ souřadnicového systému je klíčovým krokem vektorového řízení, neboť umožňuje pracovat se stavovými veličinami jako s konstantami v ustáleném stavu.
 
 Je představen řízený pohon, popsán model řízeného motoru. Rovnice popisující motor jsou pomocí představené transformace převedeny do prostoru $dq_{13}$.
 
 Dále je představen princip prostorově vektorové pulzně šířkové modulace (SVPWM), popsán proces výběru výstupních napěťových vektorů a výpočet časů jejich aktivace.
 
-V sekci věnované návrhu regulátoru je představeno použité kaskádní řízení, následované rozborem jednotlivých bloků. Je popsáno generování referenčních proudů zajišťující maximální moment generovaný jednotkou odebíraného proudu (MTPA). Na vlastním modelu je testován MTPA i využitím injekce 3. harmonické. Jsou navržena struktura jednotlivých regulátorů.
+V sekci věnované návrhu regulátoru je představeno kaskádní řízení složené z vnitřní proudové smyčky a vnější smyčky otáčkové. Je popsána kompenzace zpětně indukovaného elektromotorického napětí (back-EMF), která snižuje překmity při skokových změnách referenční hodnoty. Dále je popsáno generování referenčních proudů algoritmem MTPA (Maximum Torque Per Ampere), zajišťujícím maximální moment na odebíraný ampér. Na vlastním modelu je testován MTPA i s injekcí 3. harmonické. Referenční proudy jsou předpočítány do vyhledávacích tabulek, čímž se snižuje výpočetní náročnost za běhu.
 
-V poslední části se práce věnuje implementaci popsaných algoritmů v prostředí Matlab a Simulink. Základní bloky jsou nejdříve testovány ve spojité vazbě s použitím datových typů s plovoucí desetinnou čárkou. Následně je popsána implementace verze vhodné ke generování HDL kódu, popsány výsledky simulací. Pro ověřené bloky je vygenerován HDL kód a ověřen na SoC vývojovém kitu ZedBoard.
+V poslední části se práce věnuje implementaci popsaných algoritmů v prostředí Matlab a Simulink. Řídicí bloky jsou nejdříve ověřeny ve spojité vazbě s využitím datových typů s plovoucí desetinnou čárkou, a to jak na vlastním analytickém modelu, tak na modelu ze knihovny Simscape. Následně je popsána implementace verze vhodné ke generování HDL kódu pomocí nástrojů HDL Coder a HDL Verifier. Volba FPGA implementace je motivována požadavkem na deterministické časování a nízkou latenci řídicí smyčky. Vygenerovaná IP jádra jsou nahrána a funkčně ověřena na vývojovém kitu ZedBoard (SoC Xilinx Zynq-7000),
 
 
 V práci jsem použil generativní umělou inteligenci pro kontrolu gramatiky a jako pomoc při vyhledávání.

@@ -4,205 +4,574 @@
   %draft,    				  % Testovací překlad
   12pt,       				% Velikost základního písma je 12 bodů
 	t,                  % obsah slajdů bude vždy začínat od shora (nebude vertikálně centrovaný)
-	aspectratio=1610,   % poměr stran bude 16:10 (všechny projektory v učebnách na Technické 12 Brno),
-	                    % další volby jsou 43, 149, 169, 54, 32.
+	aspectratio=1610,   % poměr stran bude 16:10
 	unicode,						% Záložky a informace budou v kódování unicode
-]{beamer}				    	% Dokument třídy 'zpráva', vhodná pro sazbu závěrečných prací s kapitolami
-%\usepackage{etex}
+]{beamer}				    	% Dokument třídy beamer
 
 \usepackage[utf8]		  % Kódování zdrojových souborů je v UTF-8
-	{inputenc}					% Balíček pro nastavení kódování zdrojových souborů
-	
-\usepackage{graphicx} % Balíček 'graphicx' pro vkládání obrázků
-											% Nutné pro vložení logotypů školy a fakulty
+	{inputenc}
 
-\usepackage[          % Balíček 'acronym' pro sazby zkratek a symbolů
-	nohyperlinks				% Nebudou tvořeny hypertextové odkazy do seznamu zkratek
-]{acronym}						
-											% Nutné pro použití prostředí 'acronym' balíčku 'thesis'
-
-%% Balíček hyperref je volán třídou beamer automaticky, proto není třeba následujícího kódu:
-%\usepackage[
-%	breaklinks=true,		% Hypertextové odkazy mohou obsahovat zalomení řádku
-%	hypertexnames=false % Názvy hypertextových odkazů budou tvořeny
-%											% nezávisle na názvech TeXu
-%]{hyperref}						% Balíček 'hyperref' pro sazbu hypertextových odkazů
-%											% Nutné pro použití příkazu 'nastavenipdf' balíčku 'thesis'
-
-\usepackage{cmap} 		% Balíček cmap zajišťuje, že PDF vytvořené `pdflatexem' je
-											% plně "prohledávatelné" a "kopírovatelné"
-
-%\usepackage{upgreek}	% Balíček pro sazbu stojatých řeckých písmem
-											%% např. stojaté pí: \uppi
-											%% např. stojaté mí: \upmu (použitelné třeba v mikrometrech)
-											%% pozor, grafická nekompatibilita s fonty typu Computer Modern!
-
-%\usepackage{amsmath} %balíček pro sabu náročnější matematiky
-
-\usepackage{booktabs} % Balíček, který umožňuje v tabulce používat
-                      % příkazy \toprule, \midrule, \bottomrule
-
-\usepackage{algorithm2e} %balíček pro sazbu algoritmů/pseudokódu
+\usepackage{graphicx}
+\usepackage[nohyperlinks]{acronym}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage{tikz}
+\usetikzlibrary{positioning, arrows.meta, calc}
+\usepackage{cmap}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%      Definice informací o dokumentu             %%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\input{nastaveni}      % v tomto souboru doplňte údaje o sobě, o názvu práce...
-                       % (tento soubor je sdílený s textem práce)
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\input{nastaveni}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%     Nastavení polí ve Vlastnostech dokumentu PDF      %%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Při vloženém balíčku 'hyperref' lze použít příkaz '\pdfsettings'
 \pdfsettings
-%  Nastavení polí je možné provést také ručně příkazem:
-%\hypersetup{
-%  pdftitle={Název studentské práce},    	% Pole 'Document Title'
-%  pdfauthor={Autor studenstké práce},   	% Pole 'Author'
-%  pdfsubject={Typ práce}, 						  	% Pole 'Subject'
-%  pdfkeywords={Klíčová slova}           	% Pole 'Keywords'
-%}
-\hypersetup{pdfpagemode=FullScreen}       % otevření rovnou v režimu celé obrazovky
+\hypersetup{pdfpagemode=FullScreen}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\usetheme{VUT} 				% barvy a rozložení prezentace odpovídající VUT FEKT
-% alternativně lze použít jiná berevná témata, ale bez záruky. Například: 
-%\usetheme{Darmstadt} \usecolortheme{default2}
-\logoheader					% vytvoření zkráceného loga VUT FEKT v hlavičce slajdu, nechte odkomentované
-
-
+\usetheme{VUT}
+\logoheader
 
 \begin{document}
 
-% v případě zakomentování následujícího se zobrazí v pravém dolním rohu slajdů klikatelné navigační symboly 
 \disablenavigationsymbols
 
-% titulní snímek, vysazen bez horních, dolních a postranních lišt (volba plain),
-% není tak vysazen ani nadpis snímku
+% Titulní snímek
 \maketitle
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% 1. snímek s cíli (zadaním) práce
-\begin{frame} 
-	% nadpis snímku
+% Snímek 1: Cíle práce
+\begin{frame}
 	\frametitle{Cíle práce}
 	\begin{itemize}
-			\item Nastudovat
-			\item Popsat
+		\item Nastudovat problematiku \textbf{vektorového řízení pětifázového PMSM}
+		\item Odvodit a implementovat transformaci do prostoru $dq_{1\,3}$
+		\item Popsat/navrhout  \textbf{SVPWM modulátor}  
+		\item Implementovat algoritmus \textbf{vektorvého řízení} v prostření Matlab/ Simulink
+			 \begin{itemize}
+			\item \textbf{kaskádní regulátor} -- proudová smyčka + otáčková smyčka
+			\item MTPA s injekcí 3.~harmonické 
+			\end{itemize}
+		\item Implementovat na  vývojovém kitu \textbf{ZedBoard (Xilinx Zynq-7000)}
+	\end{itemize}
+\end{frame}
+
+% Snímek 2: Pětifázový motor
+\begin{frame}
+	\frametitle{Pětifázový synchronní motor s permanentními magnety }
+	
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.85\textwidth]{obrazky/electric.drawio (1).png}
+	\end{figure}
+	
+			\textbf{Výhody oproti třífázovému motoru:}
+			\begin{itemize}
+				\item Vyšší hustota točivého momentu
+				\item Plynulejší průběh momentu
+				\item Schopné porvozu  odolnost pri poruše 
+			\end{itemize}
+			
+		
+
+
+\end{frame}
+
+% dq_13
+\begin{frame}
+	\frametitle{Transformace do prostoru $dq_{1\,3}$}
+	\begin{columns}
+		\begin{column}{0.4\textwidth}
+			\textbf{Převod do $\alpha \beta_{1\,3}$}
+			\[	f_{\alpha_1 \beta_1 } \equiv \frac{2}{5} \left( f_{a} + a_5 f_{b} + a_5^2 f_{c} + a_5^3 f_{d} + a_5^4 f_{e} \right)
+			\]
+			\[	f_{\alpha_3 \beta_3 } \equiv \frac{2}{5} \left( f_{a} + a_5 f_{c} + a_5^2 f_{e} + a_5^3 f_{b} + a_5^4 f_{d} \right)
+			\]
+			\[  	\begin{gathered}
+					f_0=\frac{1}{5}\left( f_a +f_b+f_c+f_d+f_e\right)\\
+					a_5=e^{j2\pi/5}
+			\end{gathered}
+			\]
+
+			\textbf{Převod do $d q_{1\,3}$}
+			\[	f_{d_1 q_1}= f_{\alpha_1 \beta_1} \cdot e^{-j\theta}\]
+			\[	f_{d_3 q_3}= f_{\alpha_3 \beta_3} \cdot e^{-j3\theta}\]
+		\end{column}
+		\begin{column}{0.6\textwidth}
+			\begin{figure}
+				\centering
+				\input{obrazky/abframe1 copy.tex}
+			\end{figure}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+% dq_13 2
+\begin{frame}
+	\frametitle{Transformace do prostoru $dq_{1\,3}$ maticový zápis}
+	\begin{columns}
+		\begin{column}{0.4\textwidth}
+			\[f_{dq_{1\,3}} = K_R \cdot f_{abcde} \]
+		\end{column}
+		\begin{column}{0.6\textwidth}
+		
+		\end{column}
+	\end{columns}
+\end{frame}
+
+
+
+% Matematický popis motoru
+\begin{frame}
+	\begin{columns}[T]
+		\begin{column}{0.4\textwidth}
+	\frametitle{Matematický popis motoru}
+	\begin{equation}
+		v=R_s i + \frac{d\psi_s}{dt} 
+	\end{equation}
+	\begin{equation}
+		\psi_s = L_s(\theta) i + \psi_m(\theta)
+	\end{equation}
+
+	
+	\begin{equation}
+		\label{eq:flux rotace abc} 
+		 \psi_m(\theta)  = 
+		\underbrace{
+			\begin{bmatrix}
+				\cos \theta_r \\
+				\cos(\theta_r - 2\pi/5) \\
+				\cos(\theta_r - 4\pi/5) \\
+				\cos(\theta_r + 4\pi/5) \\
+				\cos(\theta_r + 2\pi/5)
+			\end{bmatrix}}_\gamma
+			\cdot \Psi_{PM}
+		\end{equation}
+	\end{column}
+	\begin{column}{0.5\textwidth}
+		\begin{equation}
+    \label{eq:model abc induknost}
+    L_{s}(\theta) = L_{ls}I + L_{A5}M_{a5} + L_{B}M_{b5}(\theta)
+\end{equation}
+{\input{obrazky/ma5mb5 copy.tex}}
+	\end{column}
+	\end{columns}
+\vspace{0.5ex}
+	{\small  $\psi$~-- spřažený tok, $\psi_m$~-- tok PM, $L_{ls}$~-- rozptylová indukčnost, $L_{A5}$, $L_B$~-- amplitudy indukčností, $M_{a5}$, $M_{b5}$~-- matice indukčností, $\Psi_{PM}$~-- amplituda toku PM}
+
+\end{frame}
+
+
+%% model v dq_13
+\begin{frame}
+	\frametitle{Model motoru v $dq_{1\,3}$}
+
+	\begin{columns}[T]
+		\begin{column}{0.56\textwidth}
+			\textbf{Statorové napětí:}
+			\begin{equation*}
+				v_{dq} = R_s\,i_{dq}
+					+ \omega_{fr}\,E\, \psi_{s_{dq}}+ L_s\frac{d\,i_{dq}}{dt}
+			\end{equation*}
+			\vspace{0.5ex}
+			\textbf{Statorový tok a indukčnost:}
+			\begin{equation*}
+				\psi_{s_{dq}} =
+				\underbrace{
+				\begin{bmatrix}
+					L_{d1}&0&0&0\\
+					0&L_{q1}&0&0\\
+					0&0&L_{d3}&0\\
+					0&0&0&L_{q3}
+				\end{bmatrix}}_{L_{s_{dq}}}
+				i_{dq}
+				+
+				\begin{bmatrix}1\\0\\0\\0\end{bmatrix}\Psi_{PM}
+			\end{equation*}
+		\end{column}
+		\begin{column}{0.40\textwidth}
+			\textbf{Matice zpětného EMF:}
+			\begin{equation*}
+				E =
+				\begin{bmatrix}
+					0&-1&0&0\\
+					1&0&0&0\\
+					0&0&0&-3\\
+					0&0&3&0
+				\end{bmatrix}
+			\end{equation*}
+			\vspace{0.5ex}
+			\begin{alertblock}{}
 				\begin{itemize}
-					\item nastudované
+					\item Nezávislé na $\theta$
+					\item $L_{s_{dq}}$ diagonální 
+					\item $\Psi_{PM}$ pouze v ose $d_1$
 				\end{itemize}
-			\item Implementovat
-				\begin{itemize}
-					\item nastudované
-					\item nové
-				\end{itemize}
-			\item Porovnat a vyhodnotit
-				\begin{itemize}
-						\item výsledky
-				\end{itemize}
+			\end{alertblock}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+
+% blokac rizeni
+\begin{frame}
+	\frametitle{Blokové schéma řízení}
+	\input{obrazky/Blokac_riz_prez.tex}
+	\begin{itemize}
+		\item $T_\mathrm{S\_reg} = 50\,\text{ms}$
+	\end{itemize}
+
+\end{frame}
+
+%Modulace 1
+\begin{frame}
+	\frametitle{SWM modulace}
+	\begin{columns}
+		\begin{column}{0.5\textwidth}
+		\begin{itemize}
+			\item 32 výstupních vektorů	(10 sektorů)
+			\item výběr 4 nenulovách na základě $U_{\alpha\beta _1}^*$ 
+			\item Nejdelší v $\alpha\beta_1$ odpovídá nejkratšímu v $\alpha\beta_3$
+		\end{itemize}
+
+
+		\begin{equation*}
+			\label{eq:maticove svm}
+			U_{\alpha \beta_{13}}^*=A \cdot 
+			\begin{bmatrix}
+				t_1\\t_2\\t_3\\t_4   
+			\end{bmatrix}
+		\end{equation*}
+		\begin{equation*}
+			\label{eq:svm casy final}
+			t_{vec}
+			= A_n^{-1}\cdot  U_{\alpha \beta_{1\,3}}^*
+		\end{equation*}
+
+		\end{column}
+		\begin{column}{0.3\textwidth}
+			\vspace{-3em}
+			\begin{figure}
+				% První obrázek
+					\centering
+					\input{obrazky/svm1}
+				\end{figure}
+				\vspace{-3em}
+				\begin{figure}
+				% Druhý obrázek
+					\centering
+						\input{obrazky/svm1b}
+				\end{figure}
+		\end{column}
+	\end{columns}
+
+
+\end{frame}
+
+
+
+%Modulace implmentace
+\begin{frame}
+	\frametitle{Implementace SVPWM}
+	\begin{figure}
+		\includegraphics[width=\linewidth]{obrazky/svm_simulink.png}
+	\end{figure}
+
+	$	t_{vec}	= A_n^{-1}\cdot  U_{\alpha \beta_{1\,3}}^*	$
+\end{frame}
+
+%% MTPA 1
+\begin{frame}
+	\frametitle{Generování proudové reference MTPA }
+	\textbf{Generovaný moment:}
+		\begin{equation}
+			\label{eq:moment 3rd}
+			T_e = \frac{5}{2} p \cdot \left[
+			\left(\Psi _{\mathrm{PM}}+i_{\mathrm{d1}}\,\left(L_{\mathrm{d1}}-L_{\mathrm{q1}}\right)\right)\,i_{\mathrm{q1}}+
+			\left( k\cdot \Psi_{PM}+ i_{\mathrm{d3}} \left(L_{\mathrm{d3}}-\,L_{\mathrm{q3}}\right)\right)3\,i_{\mathrm{q3}}\right]
+		\end{equation}
+
+	\textbf{Minimalizace oporových ztrát $P=I^2 R$:}	
+	\begin{equation}
+		\label{eq:optimalni proud}
+		J_{min} = i_{d1}^2 + i_{q1}^2 + i_{d3}^2 + i_{q3}^2
+	\end{equation}
+
+	\textbf{Omezení proudu:}
+	\begin{equation}
+		\label{eq:Idc max}
+		\sqrt{i_{d1}^2 + i_{q1}^2 + i_{d3}^2 + i_{q3}^2} \leq I_{DC\text{max}}
+	\end{equation}
+
+	\begin{equation}
+		\label{eq:isw max}
+		i_{n,\text{max}} \geq \hat{I}_1 + \hat{I}_3 = \sqrt{i_{d1}^2 + i_{q1}^2} + \sqrt{i_{d3}^2 + i_{q3}^2}
+	\end{equation}
+\end{frame}
+
+% MTPA 2
+\begin{frame}
+	\frametitle{Generování proudové reference MTPA -- pokračování}
+
+	\begin{columns}
+		\begin{column}{0.35\textwidth}
+			\begin{alertblock}{Poronání \\ maximláních  mometů}
+			
+					\begin{tabular}{lccc}
+						Pouze $i_{q1}$                 &  9{,}8 Nm    \\
+						$i_{dq_1}$  & 14{,}76 Nm \\
+						$i_{dq_{1\,3}}$  & 17{,}88 Nm\\
+
+						
+					\end{tabular}
+				
+			\end{alertblock}
+			\begin{itemize}
+				\item Problém řešnen matlab funkci \texttt{fmincon} 
+				\item Implmenatce jako Lookup tabulka 
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.7\textwidth}
+			\begin{figure}
+				\centering
+				\includegraphics[width=\textwidth]{obrazky/mtpa3.png}
+				\caption{Optimální proudy s injekcí 3.~harmonické}
+			\end{figure}
+			
+		\end{column}
+	\end{columns}
+\end{frame}
+
+
+%MTPA implmentace
+\begin{frame}
+	NENi
+	\frametitle{Implementace MTPA s injekcí 3.~harmonické}
+	\begin{figure}
+		\includegraphics[width=\linewidth]{obrazky/T_gen_simulink.png}
+	\end{figure}
+\end{frame}
+
+
+
+
+
+
+
+%%%%%%%%%%%%%
+% Snímek 8a: Výsledky simulace -- průběh otáček a zátěže
+\begin{frame}
+	\frametitle{Výsledky simulace -- regulace otáček}
+	\textbf{Podmínky:} skokové změny otáček každých 5\,s, přídavná zátěž 0--5\,Nm (perioda 2{,}5\,s), $T_s=50\,\mu\text{s}$
+	\vspace{0.5ex}
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.95\textwidth]{obrazky/speedReg2}
+		\caption{Průběh rychlosti a zátěžného momentu}
+	\end{figure}
+	\begin{itemize}
+		\item Regulátor rychle sleduje skok žádané hodnoty
+		\item Kompenzace poruchového momentu (přídavná zátěž) díky I-složce regulátoru otáček
 	\end{itemize}
 \end{frame}
 
 
 %%%%%%%%%%%%%
-\begin{frame} 
-	\frametitle{Klíčové nástroje}
-
-	% prostředí 'alertblock', které slouží pro zdůraznění informace
-	\begin{alertblock}{Pro práci je klíčový Eulerův vzorec}
-		$$\eul^{\jmag x}=\cos x + \jmag\sin x$$
-	\end{alertblock}
-
-	\vspace{4ex}
-	Eulerova identita je speciálním případem tohoto vzorce, jestliže dosadíme $x=\uppi$\,:
-
-	% prostředí 'block', které slouží jako informativní
-	\begin{block}{Eulerova identita}
-		$$\eul^{\jmag \uppi}=\cos \uppi + \jmag\sin \uppi,$$\\
-		odkud vyplývá
-		$$\eul^{\jmag \uppi}+1=0.$$
-	\end{block}
-\end{frame} 
-
-
-%%%%%%%%%%%%%
-\begin{frame} 
-	\frametitle{Plošný spoj}
-	
-	\begin{columns}[T] 								% prostředí sloupce s umístěním nahoře
-		\begin{column}{0.4\textwidth}		% první sloupec
-			Obrázek znázorňuje model:\\[2ex]
-			%
+% Snímek 8b: Výsledky simulace -- průběh momentu
+\begin{frame}
+	\frametitle{Výsledky simulace -- průběh momentu}
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.95\textwidth]{obrazky/speedReg1}
+		\caption{Průběh žádaného a skutečného momentu}
+	\end{figure}
+	\begin{columns}[T]
+		\begin{column}{0.5\textwidth}
 			\begin{itemize}
-				\item Deska
-				\item Součástky
-				\item Signály
-				\item Napájení
+				\item Skutečný moment sleduje žádanou hodnotu bez přeregulování
+				\item Filtr žádaného momentu ($\tau=50\,\text{ms}$) eliminuje proudové překmity
 			\end{itemize}
 		\end{column}
-		%
-		\begin{column}{0.6\textwidth}		% druhý sloupec
-			\begin{figure}%	
+		\begin{column}{0.5\textwidth}
+			\begin{block}{Vlastní model motoru}
+				Simscape nezahrnuje 3.~harmonickou $\Rightarrow$ vlastní analytický model v $dq_{1\,3}$
+			\end{block}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+
+%%%%%%%%%%%%%
+% Snímek 9: FPGA implementace -- ZedBoard
+\begin{frame}
+	\frametitle{Implementace na FPGA -- ZedBoard}
+	\begin{columns}[T]
+		\begin{column}{0.56\textwidth}
+			\begin{itemize}
+				\item \textbf{ZedBoard}: Xilinx Zynq-7020 (ARM Cortex-A9 + FPGA Artix-7)
+				\item IP cores generovány nástrojem \textbf{Matlab HDL Coder}
+				\item Funkčnost ověřena pomocí \textbf{HIL simulace} (Ethernet)
+				\item Výstup na fyzické piny (PMOD) -- řídicí signály tranzistorů
+				\item \textbf{Dead-time} kompenzace (zamezení zkratu větve)
+				\item Datové typy s pevnou desetinnou čárkou (\texttt{fixdt})
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.44\textwidth}
+			\begin{figure}
 				\centering
-				\vspace{1cm}	              % horizontální mezera
-				\includegraphics[width=0.8\columnwidth]{obrazky/soucastky}
-				%lze vložit popisek, ale povetšinou je to v prezentaci zbytečné
-				%\caption{Popisek obrázku}%
-				%\label{obr:ukazka}
+				\includegraphics[width=0.9\columnwidth]{obrazky/zedBoard}
+				\caption{ZedBoard při testování výstupu}
 			\end{figure}
 		\end{column}
-	\end{columns}											% ukončení prostředí sloupce
+	\end{columns}
 \end{frame}
 
 
 %%%%%%%%%%%%%
-\begin{frame} 
-	\frametitle{Výsledky}
-	\vspace{1cm}
-	\begin{table}[]
+% Snímek 10: Využití prostředků FPGA
+\begin{frame}
+	\frametitle{Využití prostředků FPGA -- souhrn}
+	\begin{table}
 		\centering
-		\caption{Výsledky měření mobilních sítí}
-		\label{tab:tabulka}
-			\begin{tabular}{lcc}
-				\toprule
-					Technologie  & Rychlost stahování [kB/s] & Rychlost nahrávání [kB/s] \\
-				\midrule
-					GPRS (2,5G)	& 7,2 	& 3,6\\
-					UMTS 3G     & 48 		& 48\\
-					HSPA (3,5G)	&	1\,706	&	720\\
-					LTE (4G) 		& 40\,750 & 10\,750\\
-				\bottomrule                                       
-			\end{tabular}
+		\small
+		\begin{tabular}{lrr}
+			\toprule
+			\textbf{Prostředek} & \textbf{Použito / Dostupné} & \textbf{[\%]} \\
+			\midrule
+			Slice LUT               & 13\,933 / 53\,200  & 26{,}2 \\
+			Flip-Flop (FF)          & 4\,197 / 106\,400  & 3{,}9  \\
+			Block RAM tile          & 10 / 140           & 7{,}1  \\
+			\textbf{DSP48E1 (násobiče)} & \textbf{195 / 220} & \textbf{88{,}6} \\
+			Slice                   & 4\,361 / 13\,300   & 32{,}8 \\
+			\bottomrule
+		\end{tabular}
+		\caption{Celý systém \texttt{hdl\_celek} -- čip XC7Z020}
 	\end{table}
+	\vspace{0.5ex}
+	\begin{alertblock}{Kritický prostředek: DSP48E1}
+		\textbf{88\,\%} násobiček obsazeno. Dominuje proudový regulátor s kompenzací křížové vazby (102~ks, 46\,\%).\\
+		Bez kompenzace: $\approx$\,54\,ks (25\,\%) -- kompromis přesnost vs.\ nároky.
+	\end{alertblock}
+	\vspace{0.5ex}
+	\begin{itemize}
+		\item BRAM využívány výhradně MTPA lookup tabulkou (\texttt{tork\_gen})
+		\item Snížení nároků: úprava přesnosti datových typů za cenu horší regulace
+	\end{itemize}
 \end{frame}
 
 
 %%%%%%%%%%%%%
-\begin{frame} 
+% Snímek 11: Závěr
+\begin{frame}
 	\frametitle{Závěr}
-	\dots
+	\begin{itemize}
+		\item Odvozena a implementována {rozšířená transformace $dq_{1\,3}$} pětifázového PMSM
+		\item Navržen a ověřen {SVPWM modulátor} 
+		\item Implementován {kaskádní regulátor} s kompenzací křížové vazby
+		\item {MTPA s injekcí 3.~harmonické}
+		\item Vytvořena simulink knihovna s jednotlivými bloky ve spojité i diskrétní formě
+		\item Celé řízení {nasazeno na FPGA ZedBoard} a ověřeno HIL simulací
+		
+	\end{itemize}
+	\vspace{1ex}
+	\begin{block}{Možná rozšíření}
+		\begin{itemize}
+			\item Oslabování magnetického pole (MTPV) pro provoz nad $\omega_{base}$
+			\item Reakce na výpadek jedné z fází
+		\end{itemize}
+	\end{block}
 \end{frame}
 
 
-% podekovani
-\begin{frame}[c] 
-% bez nadpisu snímku
+%%%%%%%%%%%%%
+% Poděkování
+\begin{frame}[c]
 	\frametitle{\mbox{ }}
 	\begin{center}
 		{\Huge Děkuji za pozornost!}
 	\end{center}
 \end{frame}
 
-% otázky oponenta
-\frame{
-\frametitle{Otázky oponenta}
-	\emph{Jaká je souvislost Vašeho vzorce (1.2) s~Maxwellovými rovnicemi v~integrálním tvaru?}\\[2ex]
+
+%%%%%%%%%%%%%
+% Otázky oponenta
+\begin{frame}[plain,noframenumbering]
+	\frametitle{Otázka oponenta 1}
+	\emph{Pro úpravu požadované hodnoty používáte jednoduchý setrvačný článek, zkoušel jste také úpravu požadované hodnoty pomocí rampy? Jaké jsou výhody/nevýhody obou přístupů?}\\[2ex]
 	%
-	Již staří Římané\,\dots
-}
+	\begin{columns}[T]
+		\begin{column}{0.48\textwidth}
+			\textbf{Setrvačný článek}
+			\begin{itemize}
+				\item Plynulý přechod 
+				\item Snadná implementace
+				\item Výstup asymptoticky konverguje k žádané hodnotě, nikdy jí přesně nedosáhne
+				\item Při velkých skocích může být přechodový děj nepříjemně dlouhý
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.48\textwidth}
+			\textbf{Rampa}
+			\begin{itemize}
+				\item Lineární průběh 
+				\item Žádaná hodnota je dosažena přesně po konečném čase
+				\item Parametr sklonu přímo odpovídá maximální rychlosti změny
+				\item Na konci rampy vzniká skok derivace 
+				\item Zanáší nelinearizu do systému
+			\end{itemize}
+		\end{column}
+	\end{columns}
+
+\end{frame}
+
+
+\begin{frame}[plain,noframenumbering]
+	\frametitle{Otázka oponenta 2}
+	\emph{Z Obr. 2.2 není zcela jasné, zda byly jednotlivé průběhy měřeny nezávisle na sobě, nebo všechny naráz. Upřesněte komisi proces, kterým byly získány naměřené průběhy přechodových charakteristik.
+}\\[2ex]
+	%
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.4\textwidth]{obrazky/cross_compens.png}
+	\end{figure}
+\end{frame}
+
+
+
+\begin{frame}[plain,noframenumbering]
+	\frametitle{Otázka oponenta 3}
+	\emph{Co způsobuje záporné časy sepnutí u výstupu z funkce vectortime2swtime?}\\[2ex]
+	%
+	\begin{columns}
+		\begin{column}{0.5\textwidth}
+			
+			\begin{figure}
+				\centering
+				% První obrázek
+				
+					\centering
+					\input{obrazky/detailsvmA}
+					\caption{Prostor $\alpha \, \beta \,1$ }
+					\label{fig:svm detail vlevo}
+				\end{figure}
+				
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				\begin{figure}
+					\centering
+					\resizebox{!}{0.75\height}{
+					\input{obrazky/detailsvmB}
+					}
+					\caption{Prostor $\alpha \, \beta \,3$}
+					\label{fig:svm detail vpravo}
+				\end{figure}
+				
+				
+			
+			\end{column}
+		\end{columns}
+\end{frame}
 
 \end{document}
