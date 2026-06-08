@@ -50,11 +50,7 @@
 		\item Nastudovat problematiku \textbf{vektorového řízení pětifázového PMSM}
 		\item Odvodit a implementovat transformaci do prostoru $dq_{1\,3}$
 		\item Popsat/navrhout  \textbf{SVPWM modulátor}  
-		\item Implementovat algoritmus \textbf{vektorvého řízení} v prostření Matlab/ Simulink
-			 \begin{itemize}
-			\item \textbf{kaskádní regulátor} -- proudová smyčka + otáčková smyčka
-			\item MTPA s injekcí 3.~harmonické 
-			\end{itemize}
+		\item Implementovat algoritmus \textbf{vektorového řízení} v prostředí Matlab/ Simulink
 		\item Implementovat na  vývojovém kitu \textbf{ZedBoard (Xilinx Zynq-7000)}
 	\end{itemize}
 \end{frame}
@@ -66,19 +62,67 @@
 	\begin{figure}
 		\centering
 		\includegraphics[width=0.85\textwidth]{obrazky/electric.drawio (1).png}
-	\end{figure}
+	\end{figure}	
 	
-			\textbf{Výhody oproti třífázovému motoru:}
-			\begin{itemize}
-				\item Vyšší hustota točivého momentu
-				\item Plynulejší průběh momentu
-				\item Schopné porvozu  odolnost pri poruše 
-			\end{itemize}
-			
-		
+	\textbf{Výhody oproti třífázovému motoru:}
+	\begin{itemize}
+		\item Vyšší hustota točivého momentu
+		\item Plynulejší průběh momentu
+		\item Schopné provozu, odolnost při poruše
+	\end{itemize}	
+	
+	
+	
+	
+\end{frame}			
 
+
+
+
+% Matematický popis motoru
+\begin{frame}
+	\begin{columns}[T]
+		\begin{column}{0.4\textwidth}
+			\frametitle{Matematický popis motoru}
+			\textbf{Statorové napětí:}
+			\begin{equation*}
+				v=R_s i + \frac{d\psi_s}{dt} 
+			\end{equation*}
+
+	
+	
+	\begin{equation*}
+		\label{eq:flux rotace abc} 
+		\psi_m(\theta)  = 
+		\underbrace{
+			\begin{bmatrix}
+				\cos \theta_r \\
+				\cos(\theta_r - 2\pi/5) \\
+				\cos(\theta_r - 4\pi/5) \\
+				\cos(\theta_r + 4\pi/5) \\
+				\cos(\theta_r + 2\pi/5)
+			\end{bmatrix}}_\gamma
+			\cdot \Psi_{PM}
+		\end{equation*}
+	\end{column}
+
+	\begin{column}{0.5\textwidth}
+		\textbf{Statorový tok:}
+			\begin{equation*}
+			\psi_s = L_s(\theta) i + \psi_m(\theta)
+			\end{equation*}
+		\begin{equation*}
+			\label{eq:model abc induknost}
+			L_{s}(\theta) = L_{ls}I + L_{A5}M_{a5} + L_{B}M_{b5}(\theta)
+		\end{equation*}
+			{\input{obrazky/ma5mb5 copy.tex}}
+	\end{column}
+\end{columns}
+\vspace{0.5ex}
+{\small  $\psi_s$~-- statorový tok, $\psi_m$~-- tok PM, $L_{ls}$~-- rozptylová indukčnost, $L_{A5}$, $L_B$~-- amplitudy indukčností, $M_{a5}$, $M_{b5}$~-- matice indukčností, $\Psi_{PM}$~-- amplituda toku PM}
 
 \end{frame}
+
 
 % dq_13
 \begin{frame}
@@ -109,61 +153,84 @@
 	\end{columns}
 \end{frame}
 
-% dq_13 2
+% dq_13 ab prostory
 \begin{frame}
-	\frametitle{Transformace do prostoru $dq_{1\,3}$ maticový zápis}
+	\frametitle{Transformace do prostoru $\alpha\beta_{1\,3}$}
 	\begin{columns}
-		\begin{column}{0.4\textwidth}
-			\[f_{dq_{1\,3}} = K_R \cdot f_{abcde} \]
+		\begin{column}{0.5\textwidth}
+			\textbf{1. harmonická -- prostor $\alpha\beta_1$}
+			\begin{figure}
+				\centering
+				\resizebox{!}{4cm }{
+					\input{obrazky/abframe1 copy.tex}}
+				\end{figure}
+				\[	f_{\alpha_1\beta_1} \equiv \frac{2}{5} \left( f_{a} + a_5 f_{b} + a_5^2 f_{c} + a_5^3 f_{d} + a_5^4 f_{e} \right)	\]
+				\[	f_{d_1 q_1}= f_{\alpha_1 \beta_1} \cdot e^{-j\theta}\]
+				kde $ a_5 = e^{j2\pi/5} $
 		\end{column}
-		\begin{column}{0.6\textwidth}
-		
+		\begin{column}{0.5\textwidth}
+			\textbf{3. harmonická -- prostor $\alpha\beta_3$}
+			\begin{figure}
+				\centering
+				\resizebox{!}{4cm }{
+					\input{obrazky/ab_frame3.tex}
+					}
+			\end{figure}
+			\[
+				f_{\alpha_3\beta_3} \equiv \frac{2}{5} \left( f_{a} + a_5 f_{c} + a_5^2 f_{e} + a_5^3 f_{b} + a_5^4 f_{d} \right)
+			\]
+					\[	f_{d_3 q_3}= f_{\alpha_3 \beta_3} \cdot e^{-j3\theta}\]
+
 		\end{column}
 	\end{columns}
-\end{frame}
-
-
-
-% Matematický popis motoru
-\begin{frame}
-	\begin{columns}[T]
-		\begin{column}{0.4\textwidth}
-	\frametitle{Matematický popis motoru}
-	\begin{equation}
-		v=R_s i + \frac{d\psi_s}{dt} 
-	\end{equation}
-	\begin{equation}
-		\psi_s = L_s(\theta) i + \psi_m(\theta)
-	\end{equation}
-
 	
-	\begin{equation}
-		\label{eq:flux rotace abc} 
-		 \psi_m(\theta)  = 
-		\underbrace{
-			\begin{bmatrix}
-				\cos \theta_r \\
-				\cos(\theta_r - 2\pi/5) \\
-				\cos(\theta_r - 4\pi/5) \\
-				\cos(\theta_r + 4\pi/5) \\
-				\cos(\theta_r + 2\pi/5)
-			\end{bmatrix}}_\gamma
-			\cdot \Psi_{PM}
-		\end{equation}
-	\end{column}
-	\begin{column}{0.5\textwidth}
-		\begin{equation}
-    \label{eq:model abc induknost}
-    L_{s}(\theta) = L_{ls}I + L_{A5}M_{a5} + L_{B}M_{b5}(\theta)
-\end{equation}
-{\input{obrazky/ma5mb5 copy.tex}}
-	\end{column}
-	\end{columns}
-\vspace{0.5ex}
-	{\small  $\psi$~-- spřažený tok, $\psi_m$~-- tok PM, $L_{ls}$~-- rozptylová indukčnost, $L_{A5}$, $L_B$~-- amplitudy indukčností, $M_{a5}$, $M_{b5}$~-- matice indukčností, $\Psi_{PM}$~-- amplituda toku PM}
-
 \end{frame}
 
+% dq_13 matice
+\begin{frame}
+	\frametitle{Transformace do prostoru $dq_{1\,3}$ -- maticový zápis}
+	\begin{columns}
+		\begin{column}{0.5\textwidth}
+			\textbf{Clarkova transformace $K_{s0}$}
+			\[
+				f_{\alpha \beta_{1\,3}} 
+				= K_{s0} \cdot
+				f_{abcde}
+			\]
+			\resizebox{0.9\textwidth}{!}{$K_{s0} = \frac{2}{5}
+				\begin{bmatrix}
+					1 & \cos\tfrac{2\pi}{5} & \cos\tfrac{4\pi}{5} & \cos\tfrac{6\pi}{5} & \cos\tfrac{8\pi}{5} \\[2pt]
+					0 & \sin\tfrac{2\pi}{5} & \sin\tfrac{4\pi}{5} & \sin\tfrac{6\pi}{5} & \sin\tfrac{8\pi}{5} \\[2pt]
+					1 & \cos\tfrac{6\pi}{5} & \cos\tfrac{2\pi}{5} & \cos\tfrac{8\pi}{5} & \cos\tfrac{4\pi}{5} \\[2pt]
+					0 & \sin\tfrac{6\pi}{5} & \sin\tfrac{2\pi}{5} & \sin\tfrac{8\pi}{5} & \sin\tfrac{4\pi}{5} \\[2pt]
+					\tfrac{1}{2} & \tfrac{1}{2} & \tfrac{1}{2} & \tfrac{1}{2} & \tfrac{1}{2}
+				\end{bmatrix}$
+				}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Rotační matice $R_0(\theta)$}
+			\[
+				f_{dq_{1\,3}}
+				= R_0(\theta) \cdot	f_{\alpha \beta_{1\,3}}
+			\]
+			\resizebox{0.9\textwidth}{!}{$
+				R_0(\theta)=
+				\begin{bmatrix}
+					\cos\theta & \sin\theta & 0 & 0 & 0\\
+					-\sin\theta & \cos\theta & 0 & 0 & 0\\
+					0 & 0 & \cos 3\theta & \sin 3\theta & 0\\
+					0 & 0 & -\sin 3\theta & \cos 3\theta & 0\\
+					0 & 0 & 0 & 0 & 1
+				\end{bmatrix}
+			$}
+			\vspace{0.3em}
+			\textbf{Přímá transformace $K_{R0}(\theta)$}
+			\[
+				f_{dq_{1,3}} = \underbrace{R_0(\theta)\cdot K_{s0}}_{K_{R0}(\theta)}\cdot f_{abcde}
+			\]
+		\end{column}
+	\end{columns}
+\end{frame}
 
 %% model v dq_13
 \begin{frame}
@@ -177,7 +244,7 @@
 					+ \omega_{fr}\,E\, \psi_{s_{dq}}+ L_s\frac{d\,i_{dq}}{dt}
 			\end{equation*}
 			\vspace{0.5ex}
-			\textbf{Statorový tok a indukčnost:}
+			\textbf{Statorový tok:}
 			\begin{equation*}
 				\psi_{s_{dq}} =
 				\underbrace{
@@ -215,24 +282,69 @@
 	\end{columns}
 \end{frame}
 
+\begin{frame}
+\frametitle{Odstranění křížové vazby}
+\textbf{Původní model}
+\begin{equation}
+    \label{eq:ss idq s kriz}
+     \frac{di}{dt} = \frac{1}{L_s} \left( v_{dq_{13}} - R_s i_{dq_{13}} - \omega_{fr}E \left( L_{s}i_{dq_{13}} + \gamma \Psi_{PM}\right) \right)
+\end{equation}
+
+\textbf{Substituce napětí:}
+\begin{equation}
+\label{eq:substituce v}
+    v(t)=u(t) +  \omega(t) E \left(  i(t) + \gamma \Psi\right)
+\end{equation}
+
+\textbf{Model bez křížévé vazby}
+\begin{equation}
+    \label{eq:proud bez krize}
+     \frac{di}{dt} = \frac{1}{L_s} \left( v - R_s i_{dq_{13}}  \right)
+\end{equation}
+
+\end{frame}
 
 % blokac rizeni
 \begin{frame}
 	\frametitle{Blokové schéma řízení}
+	\vfill
 	\input{obrazky/Blokac_riz_prez.tex}
-	\begin{itemize}
-		\item $T_\mathrm{S\_reg} = 50\,\text{ms}$
-	\end{itemize}
-
+	\vfill
+	\begin{center}
+		\footnotesize $T_\mathrm{S\_reg} = 50\,\text{ms}$
+	\end{center}
 \end{frame}
 
 %Modulace 1
 \begin{frame}
-	\frametitle{SWM modulace}
+	\frametitle{SVM modulace}
+	\begin{columns}
+		\begin{column}{0.48\textwidth}
+			\centering
+			\input{obrazky/svm1}
+		\end{column}
+		\begin{column}{0.48\textwidth}
+			\centering
+			\input{obrazky/svm1b}
+		\end{column}
+	\end{columns}
+	\vspace{0.5em}
+	\begin{columns}
+		\begin{column}{0.55\textwidth}
+			\begin{itemize}
+				\item 32 výstupních vektorů (10 sektorů)
+			\end{itemize}
+		\end{column}
+		
+	\end{columns}
+\end{frame}
+
+%Modulace 2
+\begin{frame}
+	\frametitle{SVM modulace}
 	\begin{columns}
 		\begin{column}{0.5\textwidth}
 		\begin{itemize}
-			\item 32 výstupních vektorů	(10 sektorů)
 			\item výběr 4 nenulovách na základě $U_{\alpha\beta _1}^*$ 
 			\item Nejdelší v $\alpha\beta_1$ odpovídá nejkratšímu v $\alpha\beta_3$
 		\end{itemize}
@@ -253,25 +365,26 @@
 
 		\end{column}
 		\begin{column}{0.3\textwidth}
-			\vspace{-3em}
+			\vspace{-0.5em}
 			\begin{figure}
 				% První obrázek
 					\centering
-					\input{obrazky/svm1}
+					\resizebox{!}{0.5\height}{
+						\input{obrazky/detailsvmA}
+					}
 				\end{figure}
-				\vspace{-3em}
 				\begin{figure}
 				% Druhý obrázek
 					\centering
-						\input{obrazky/svm1b}
+					\resizebox{!}{0.5\height}{
+						\input{obrazky/detailsvmB}
+					}
 				\end{figure}
 		\end{column}
 	\end{columns}
 
 
 \end{frame}
-
-
 
 %Modulace implmentace
 \begin{frame}
@@ -290,8 +403,8 @@
 		\begin{equation}
 			\label{eq:moment 3rd}
 			T_e = \frac{5}{2} p \cdot \left[
-			\left(\Psi _{\mathrm{PM}}+i_{\mathrm{d1}}\,\left(L_{\mathrm{d1}}-L_{\mathrm{q1}}\right)\right)\,i_{\mathrm{q1}}+
-			\left( k\cdot \Psi_{PM}+ i_{\mathrm{d3}} \left(L_{\mathrm{d3}}-\,L_{\mathrm{q3}}\right)\right)3\,i_{\mathrm{q3}}\right]
+			\Big(\Psi _{\mathrm{PM}}+i_{\mathrm{d1}}\,\big(L_{\mathrm{d1}}-L_{\mathrm{q1}}\big)\Big)\,i_{\mathrm{q1}}+
+			\Big( k\cdot \Psi_{PM}+ i_{\mathrm{d3}} \big(L_{\mathrm{d3}}-\,L_{\mathrm{q3}}\big)\Big)3\,i_{\mathrm{q3}}\right]
 		\end{equation}
 
 	\textbf{Minimalizace oporových ztrát $P=I^2 R$:}	
@@ -346,14 +459,6 @@
 \end{frame}
 
 
-%MTPA implmentace
-\begin{frame}
-	NENi
-	\frametitle{Implementace MTPA s injekcí 3.~harmonické}
-	\begin{figure}
-		\includegraphics[width=\linewidth]{obrazky/T_gen_simulink.png}
-	\end{figure}
-\end{frame}
 
 
 
@@ -413,54 +518,27 @@
 			\begin{itemize}
 				\item \textbf{ZedBoard}: Xilinx Zynq-7020 (ARM Cortex-A9 + FPGA Artix-7)
 				\item IP cores generovány nástrojem \textbf{Matlab HDL Coder}
+				\item Uprava kódu 
+					\begin{itemize}
+						\item definovány odpovidající dat tipy
+						\item pouze funkce podoporujicí HDL Coder
+						\item minimalizce počtu sin cos výpočtů
+						\end{itemize}
 				\item Funkčnost ověřena pomocí \textbf{HIL simulace} (Ethernet)
-				\item Výstup na fyzické piny (PMOD) -- řídicí signály tranzistorů
-				\item \textbf{Dead-time} kompenzace (zamezení zkratu větve)
-				\item Datové typy s pevnou desetinnou čárkou (\texttt{fixdt})
+				\item Výstup na fyzické piny 
+				\item \textbf{Dead-time} při přepínání (zamezení zkratu větve)
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.44\textwidth}
 			\begin{figure}
 				\centering
-				\includegraphics[width=0.9\columnwidth]{obrazky/zedBoard}
-				\caption{ZedBoard při testování výstupu}
+				\includegraphics[width=0.9\columnwidth]{obrazky/zedBoard.jpg}
 			\end{figure}
 		\end{column}
 	\end{columns}
 \end{frame}
 
 
-%%%%%%%%%%%%%
-% Snímek 10: Využití prostředků FPGA
-\begin{frame}
-	\frametitle{Využití prostředků FPGA -- souhrn}
-	\begin{table}
-		\centering
-		\small
-		\begin{tabular}{lrr}
-			\toprule
-			\textbf{Prostředek} & \textbf{Použito / Dostupné} & \textbf{[\%]} \\
-			\midrule
-			Slice LUT               & 13\,933 / 53\,200  & 26{,}2 \\
-			Flip-Flop (FF)          & 4\,197 / 106\,400  & 3{,}9  \\
-			Block RAM tile          & 10 / 140           & 7{,}1  \\
-			\textbf{DSP48E1 (násobiče)} & \textbf{195 / 220} & \textbf{88{,}6} \\
-			Slice                   & 4\,361 / 13\,300   & 32{,}8 \\
-			\bottomrule
-		\end{tabular}
-		\caption{Celý systém \texttt{hdl\_celek} -- čip XC7Z020}
-	\end{table}
-	\vspace{0.5ex}
-	\begin{alertblock}{Kritický prostředek: DSP48E1}
-		\textbf{88\,\%} násobiček obsazeno. Dominuje proudový regulátor s kompenzací křížové vazby (102~ks, 46\,\%).\\
-		Bez kompenzace: $\approx$\,54\,ks (25\,\%) -- kompromis přesnost vs.\ nároky.
-	\end{alertblock}
-	\vspace{0.5ex}
-	\begin{itemize}
-		\item BRAM využívány výhradně MTPA lookup tabulkou (\texttt{tork\_gen})
-		\item Snížení nároků: úprava přesnosti datových typů za cenu horší regulace
-	\end{itemize}
-\end{frame}
 
 
 %%%%%%%%%%%%%
@@ -507,7 +585,7 @@
 			\textbf{Setrvačný článek}
 			\begin{itemize}
 				\item Plynulý přechod 
-				\item Snadná implementace
+				\item Snažší implementace
 				\item Výstup asymptoticky konverguje k žádané hodnotě, nikdy jí přesně nedosáhne
 				\item Při velkých skocích může být přechodový děj nepříjemně dlouhý
 			\end{itemize}
@@ -532,13 +610,15 @@
 	\emph{Z Obr. 2.2 není zcela jasné, zda byly jednotlivé průběhy měřeny nezávisle na sobě, nebo všechny naráz. Upřesněte komisi proces, kterým byly získány naměřené průběhy přechodových charakteristik.
 }\\[2ex]
 	%
-	\begin{figure}
-		\centering
-		\includegraphics[width=0.4\textwidth]{obrazky/cross_compens.png}
-	\end{figure}
 \end{frame}
 
-
+\begin{frame}
+	
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.9\textwidth]{obrazky/cross_compens_prez.pdf}
+	\end{figure}
+\end{frame}
 
 \begin{frame}[plain,noframenumbering]
 	\frametitle{Otázka oponenta 3}
